@@ -15,9 +15,9 @@ Ta paketnik služi kot osebni nabiralnik, ki varuje in preverja pravilnost predm
 - **Lastnik:** Želim videti zgodovino odklepanja.
 - **Lastnik:** Želim odkleniti nabiralnik na daljavo.
 - **Lastnik:** Želim dodati osebo kot stalnega uporabnika.
-- **Lastnik:** Želim prejeti obvestilo v realnem času ob odpiranju ali zapiranju.
+- **Lastnik:** Želim prejeti obvestilo v realnem času ob odpiranju ali zapiranju paketnika.
 - **Stalni uporabnik:** Želim direkten dostop za odklepanje brez dodatnih korakov.
-- **Dostavljalec:** Želim imeti dostop do odklepanja za varno dostavo.
+- **Dostavljalec:** Želim imeti dostop do odklepanja za dostavo.
 - **Nov uporabnik:** Želim se registrirati in dodati svoj fizični paketnik v portal.
 
 ---
@@ -39,3 +39,6 @@ Ta paketnik služi kot osebni nabiralnik, ki varuje in preverja pravilnost predm
 - **Začasni in stalni dostop:** Simon (29. 5. 2026)
 - **Prikaz podatkov o predmetu:** Simon (25. 5. 2026)
 - **Izpis dnevnika paketnika:** Marcel (29. 5. 2026)
+
+---
+### Pisanje projektne ideje je bilo enakomerno razdeljeno med članama!
