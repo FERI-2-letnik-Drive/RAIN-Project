@@ -10,15 +10,15 @@ Ta paketnik služi kot osebni nabiralnik, ki varuje in preverja pravilnost predm
 ---
 
 ## 👥 Uporabniške zgodbe
-- Kot **lastnik** želim ustvariti začasno kodo za dostavljalca, da bo paket zaklenjen do prevzema.
-- Kot **lastnik** želim preveriti težo paketa, da preprečim poskuse goljufanja.
-- Kot **lastnik** želim videti zgodovino odklepanja.
-- Kot **lastnik** želim odkleniti nabiralnik na daljavo.
-- Kot **lastnik** želim dodati osebo kot stalnega uporabnika.
-- Kot **lastnik** želim prejeti obvestilo v realnem času ob odpiranju ali zapiranju paketnika.
-- Kot **stalni uporabnik** želim direkten dostop za odklepanje brez dodatnih korakov.
-- Kot **dostavljalec** želim imeti dostop do odklepanja za dostavo.
-- Kot **nov uporabnik** želim se registrirati in dodati svoj fizični paketnik v portal.
+- **Lastnik:** Želim ustvariti začasno kodo za dostavljalca, da bo paket zaklenjen do prevzema.
+- **Lastnik:** Želim preveriti težo paketa, da preprečim poskuse goljufanja.
+- **Lastnik:** Želim videti zgodovino odklepanja.
+- **Lastnik:** Želim odkleniti nabiralnik na daljavo.
+- **Lastnik:** Želim dodati osebo kot stalnega uporabnika.
+- **Lastnik:** Želim prejeti obvestilo v realnem času ob odpiranju ali zapiranju paketnika.
+- **Stalni uporabnik:** Želim direkten dostop za odklepanje brez dodatnih korakov.
+- **Dostavljalec:** Želim imeti dostop do odklepanja za dostavo.
+- **Nov uporabnik:** Želim se registrirati in dodati svoj fizični paketnik v portal.
 
 ---
 
