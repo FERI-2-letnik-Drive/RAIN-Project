@@ -52,7 +52,9 @@ module.exports = {
      */
     create: function (req, res) {
         var user = new UserModel({
-			name : req.body.name
+			username : req.body.username,
+            password : req.body.password,
+            email : req.body.email
         });
 
         user.save(function (err, user) {
@@ -63,7 +65,11 @@ module.exports = {
                 });
             }
 
-            return res.status(201).json(user);
+            return res.status(201).json({
+                _id: user._id,
+                username: user.username,
+                email: user.email
+            });
         });
     },
 

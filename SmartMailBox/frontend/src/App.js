@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { UserContext } from "./userContext";
 import Login from "./components/Login";
+import Register from "./components/Register"
 
 function App() {
 
@@ -21,9 +22,10 @@ function App() {
           <header className="App-header">
             <p>Smart MailBox</p>
           </header>
-          <Login/>
+          <Register/>
           <Routes>
             <Route path="/login" exact element={<Login/>}></Route>
+            <Route path="/login" exact element={<Register/>}></Route>
           </Routes>
         </div>
       </UserContext.Provider>

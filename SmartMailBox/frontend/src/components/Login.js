@@ -9,7 +9,7 @@ function Login(){
     const userContext = useContext(UserContext); 
 
     async function Login(e){
-        e.preventDefault(); // doesn't refresh (browser default action for that event)
+        e.preventDefault();
         const res = await fetch("http://localhost:3001/users/login", {
             method: "POST",
             credentials: "include",
@@ -25,7 +25,7 @@ function Login(){
             setError(data.error || "Invalid username or password");
             return;
         }
-
+        const data = await res.json();
         userContext.setUserContext(data);
     }
 
