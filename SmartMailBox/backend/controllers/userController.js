@@ -118,5 +118,55 @@ module.exports = {
 
             return res.status(204).json();
         });
+    }, 
+    login: function (req, res, next) {
+        UserModel.authenticate(req.body.username, req.body.password, function(err, user){
+            if(err || !user){
+                var err = new Error('Wrong username or passsword');
+                err.status = 401;
+                return next(err);
+            }
+            req.session.userId = user._id;
+            //res.redirect('/users/profile');
+            return res.json({
+                _id: user._id,
+                username: user.username,
+                email: user.email
+            });
+        });
+    },
+    profile: function(req, res, next){
+        if (!req.session.userId) {
+            return res.status(401).json({ error: "Not logged in" });
+        }
+
+        UserModel.findById(req.session.userId)
+        .exec(function(error, user){
+            if (error) return next(error);
+
+            if (!user) {
+                return next(new Error('User not found'));
+            }
+
+            return res.json({
+                id: user._id,
+                username: user.username,
+                email: user.email
+            });
+        });
+    },
+
+    logout: function(req, res, next){
+        if(req.session){
+            req.session.destroy(function(err){
+                if(err){
+                    return next(err);
+                } else{
+                    //return res.redirect('/');
+                    return res.status(200).json({}); // logout succesful, nothing else to return
+                }
+            });
+        }
     }
+
 };
