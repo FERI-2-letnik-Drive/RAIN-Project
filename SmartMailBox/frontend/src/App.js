@@ -2,7 +2,10 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { UserContext } from "./userContext";
 import Login from "./components/Login";
+import Logout from "./components/Logout"
 import Register from "./components/Register"
+import Header from "./components/Header"
+import Home from "./components/Home"
 
 function App() {
 
@@ -19,13 +22,13 @@ function App() {
         setUserContext: updateUserData
       }}>
         <div className="App">
-          <header className="App-header">
-            <p>Smart MailBox</p>
-          </header>
-          <Register/>
+          <Header title="Smart MailBox Application"></Header>
           <Routes>
-            <Route path="/login" exact element={<Login/>}></Route>
+            <Route path="/" exact element={<Home/>}></Route>
             <Route path="/register" exact element={<Register/>}></Route>
+            <Route path="/login" exact element={<Login/>}></Route>
+            <Route path="/logout" exact element={<Logout/>}></Route>
+            
           </Routes>
         </div>
       </UserContext.Provider>
