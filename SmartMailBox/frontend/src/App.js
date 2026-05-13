@@ -25,7 +25,7 @@ function App() {
           <Register/>
           <Routes>
             <Route path="/login" exact element={<Login/>}></Route>
-            <Route path="/login" exact element={<Register/>}></Route>
+            <Route path="/register" exact element={<Register/>}></Route>
           </Routes>
         </div>
       </UserContext.Provider>
