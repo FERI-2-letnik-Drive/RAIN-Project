@@ -51,41 +51,48 @@ module.exports = {
      * userController.create()
      */
     create: function (req, res) {
-        UserModel.findOne({ username: req.body.username }, function(err, existingUser) {
+        var user = new UserModel({
+            username: req.body.username,
+            password: req.body.password,
+            email: req.body.email
+        });
+
+        user.save(function (err, user) {
+
             if (err) {
+                // IMPORTANT: had a problem so with err.code, so I checked both because if err.error.code is empty it crashes everything
+                // required handles moongoose, unique handles mongodb (it goes in the database and checks and then sends)
+                const errorCode = err.code || (err.error && err.error.code); 
+                const keyValue = err.keyValue || (err.error && err.error.keyValue);
+
+                // duplicate key error (username/email already exists)
+                if (errorCode === 11000) {
+                    const field = Object.keys(keyValue)[0];
+                    const formattedField = field.charAt(0).toUpperCase() + field.slice(1);
+                    const errorMsg = `${formattedField} already exists`;
+                
+                    return res.status(409).json({ message: errorMsg });
+                }
+
+                // validation error (mongoose), works because of minlength: 1
+                if (err.name === 'ValidationError') { // because of required
+                    // only one message
+                    const exactErrorMsg = Object.values(err.errors)[0].message; 
+                    return res.status(400).json({ message: exactErrorMsg });
+                }
+
                 return res.status(500).json({
-                    message: 'Error checking user.', 
+                    message: 'Error when creating user',
                     error: err
                 });
             }
 
-            if (existingUser) {
-                return res.status(409).json({
-                    message: 'User already exists.'
-                });
-            }
-
-            var user = new UserModel({
-                username : req.body.username,
-                password : req.body.password,
-                email : req.body.email
+            return res.status(201).json({
+                _id: user._id,
+                username: user.username,
+                email: user.email
             });
-
-            user.save(function (err, user) {
-                if (err) {
-                    return res.status(500).json({
-                        message: 'Error when creating user',
-                        error: err
-                    });
-                }
-
-                return res.status(201).json({
-                    _id: user._id,
-                    username: user.username,
-                    email: user.email
-                });
-            });
-        })        
+        });   
     },
 
     /**
