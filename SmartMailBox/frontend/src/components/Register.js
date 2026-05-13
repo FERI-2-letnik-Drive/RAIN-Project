@@ -27,7 +27,7 @@ function Register() {
             setEmail("");
             setError("Registration failed");
         }
-        navigate("/");
+        navigate("/login");
     }
 
     return(
