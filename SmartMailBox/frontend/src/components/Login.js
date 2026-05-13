@@ -38,17 +38,17 @@ function Login(){
     }
 
     return (
-        <form onSubmit={Login}>
+        <form onSubmit={Login} className="surface-card">
         {userContext.user ? <Navigate replace to="/" /> : null}
-        <div>
-            <input type="text" name="username" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <div className="input-group">
+            <input className="input-field" type="text" name="username" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
         </div>
-        <div>
-            <input type="password" name="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <div className="input-group">
+            <input className="input-field" type="password" name="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
-        <div>
-            <button type="submit" name="submit">Submit</button>
-            {error && <div>{error}</div>}
+        <div className="input-group">
+            <input className="btn-primary" type="submit" value="Submit" />
+            {error && <div className="error-text error-general">{error}</div>}
         </div>
     </form>
     );

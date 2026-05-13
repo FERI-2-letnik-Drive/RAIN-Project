@@ -43,24 +43,24 @@ function Register() {
     }
 
     return(
-       <form onSubmit={Register}>
-        <div>
-            <input type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            {errors.email && <div>{errors.email}</div>}
+       <form onSubmit={Register} className="surface-card">
+        <div className="input-group">
+            <input className="input-field" type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            {errors.email && <div className="error-text">{errors.email}</div>}
         </div>
 
-        <div>
-            <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-            {errors.username && <div>{errors.username}</div>}
+        <div className="input-group">
+            <input className="input-field" type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+            {errors.username && <div className="error-text">{errors.username}</div>}
         </div>
 
-        <div>
-            <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            {errors.password && <div>{errors.password}</div>}
+        <div className="input-group">
+            <input className="input-field" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            {errors.password && <div className="error-text">{errors.password}</div>}
         </div>
-        <div>
-            <input type="submit" value="Register" />
-            {errors.general && <div>{errors.general}</div>}
+        <div className="input-group">
+            <input className="btn-primary" type="submit" value="Register" />
+            {errors.general && <div className="error-text error-general">{errors.general}</div>}
         </div>
     </form>
     );
