@@ -51,26 +51,41 @@ module.exports = {
      * userController.create()
      */
     create: function (req, res) {
-        var user = new UserModel({
-			username : req.body.username,
-            password : req.body.password,
-            email : req.body.email
-        });
-
-        user.save(function (err, user) {
+        UserModel.findOne({ username: req.body.username }, function(err, existingUser) {
             if (err) {
                 return res.status(500).json({
-                    message: 'Error when creating user',
+                    message: 'Error checking user.', 
                     error: err
                 });
             }
 
-            return res.status(201).json({
-                _id: user._id,
-                username: user.username,
-                email: user.email
+            if (existingUser) {
+                return res.status(409).json({
+                    message: 'User already exists.'
+                });
+            }
+
+            var user = new UserModel({
+                username : req.body.username,
+                password : req.body.password,
+                email : req.body.email
             });
-        });
+
+            user.save(function (err, user) {
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Error when creating user',
+                        error: err
+                    });
+                }
+
+                return res.status(201).json({
+                    _id: user._id,
+                    username: user.username,
+                    email: user.email
+                });
+            });
+        })        
     },
 
     /**
