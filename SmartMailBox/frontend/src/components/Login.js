@@ -10,6 +10,13 @@ function Login(){
 
     async function Login(e){
         e.preventDefault();
+
+        setError("")
+        if (!username || !password) {
+            setError("Please fill in all the fields!");
+            return;
+        }
+
         const res = await fetch("http://localhost:3001/users/login", {
             method: "POST",
             credentials: "include",
@@ -19,26 +26,31 @@ function Login(){
                 password: password
             })
         });
+
+        const data = await res.json();
         if (!res.ok) {
-            setUsername("");
-            setPassword("");
-            setError(data.error || "Invalid username or password");
+            //setUsername("");
+            //setPassword("");
+            setError(data.message || "Login failed!");
             return;
         }
-        const data = await res.json();
         userContext.setUserContext(data);
     }
 
     return (
         <form onSubmit={Login}>
-            {userContext.user ? <Navigate replace to="/" /> : ""}
-            <input type="text" name="username" placeholder="Username"
-             value={username} onChange={(e)=>(setUsername(e.target.value))}/>
-             <input type="password" name="password" placeholder="Password"
-             value={password} onChange={(e)=>(setPassword(e.target.value))}/>
-             <button name="submit-btn" className="btn btn-primary">Submit</button>
-             <label>{error}</label>
-        </form>
+        {userContext.user ? <Navigate replace to="/" /> : null}
+        <div>
+            <input type="text" name="username" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+        </div>
+        <div>
+            <input type="password" name="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        </div>
+        <div>
+            <button type="submit" name="submit">Submit</button>
+            {error && <div>{error}</div>}
+        </div>
+    </form>
     );
 }
 

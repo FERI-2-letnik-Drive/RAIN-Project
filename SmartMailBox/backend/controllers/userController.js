@@ -150,9 +150,7 @@ module.exports = {
     login: function (req, res, next) {
         UserModel.authenticate(req.body.username, req.body.password, function(err, user){
             if(err || !user){
-                var err = new Error('Wrong username or passsword');
-                err.status = 401;
-                return next(err);
+                return res.status(401).json({ message: 'Wrong username or password!' });
             }
             req.session.userId = user._id;
             //res.redirect('/users/profile');
