@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 function Header(props) {
     return (
-        <header>
+        <header className="nav-bar">
             <h1>{props.title}</h1>
             <nav>
                 <ul>
@@ -13,7 +13,7 @@ function Header(props) {
                         {context => (
                             context.user ?
                                 <>
-                                    <li><Link to='/mailboxes'>My Mailboxes</Link></li>
+                                    <li><Link to='/mailboxes'>My Mailboxes</Link></li> 
                                     <li><Link to='/mailboxes/create'>Add Mailbox</Link></li>
                                     <li><Link to='/profile'>Profile</Link></li>
                                     <li><Link to='/logout'>Logout</Link></li>
