@@ -15,8 +15,10 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/userRoutes');
 var mailboxRouter = require('./routes/mailboxRoutes');
+var permissionRouter = require('./routes/permissionRoutes');
 
 app.use('/mailboxes', mailboxRouter);
+app.use('/mailboxes/:mailboxId/permissions', permissionRouter);
 
 var app = express();
 
