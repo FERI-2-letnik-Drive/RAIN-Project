@@ -39,12 +39,10 @@ module.exports = {
                 if (err) return res.status(500).json({ message: 'Error when getting mailbox', error: err });
                 if (!mailbox) return res.status(404).json({ message: 'Mailbox not found' });
 
-                // preverimo ali je lastnik
                 if (mailbox.owner.toString() === req.session.userId.toString()) {
                     return res.json(mailbox);
                 }
 
-                // preverimo ali ima veljavno dovoljenje
                 PermissionModel.findOne({ mailboxId: mailbox._id, userId: req.session.userId, isActive: true })
                     .exec(function (err, permission) {
                         if (err) return res.status(500).json({ message: 'Error checking permission', error: err });
