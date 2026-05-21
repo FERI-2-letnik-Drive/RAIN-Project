@@ -1,3 +1,4 @@
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -6,11 +7,13 @@ var logger = require('morgan');
 
 // vključimo mongoose in ga povežemo z MongoDB
 var mongoose = require('mongoose');
-var mongoDB = "mongodb://127.0.0.1/rain-project";
+var mongoDB = process.env.MONGODB_URI;
+mongoose.set('strictQuery', false);
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', function() { console.log('✅ Povezan z MongoDB Atlas!'); });
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/userRoutes');
@@ -52,7 +55,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 var session = require('express-session');
 var MongoStore = require('connect-mongo');
 app.use(session({
-  secret: 'work hard',
+  secret: process.env.SESSION_SECRET,
   resave: true,
   saveUninitialized: false,
   store: MongoStore.create({mongoUrl: mongoDB})
