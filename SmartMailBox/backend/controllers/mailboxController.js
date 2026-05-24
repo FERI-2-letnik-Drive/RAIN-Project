@@ -58,22 +58,53 @@ module.exports = {
      * mailboxController.create()
      */
     create: function (req, res) {
-        if (!req.session.userId) {
-            return res.status(401).json({ message: 'Not logged in' });
+        if (!req.session || !req.session.userId) {
+            return res.status(401).json({ message: "You must be logged in" });
         }
 
-        if (!req.body.label) {
-            return res.status(400).json({ message: 'Label is required' });
+        if (!req.body.label || req.body.label.trim().length === 0) {
+            return res.status(400).json({ message: "Mailbox label is required" });
+        }
+
+        /*
+        if (!req.body.location || req.body.location.trim().length === 0) {
+            return res.status(400).json({ message: "Mailbox location is required" });
+        }
+        */
+
+        if (!req.file) {
+            return res.status(400).json({ message: "QR code image is required" });
         }
 
         var mailbox = new MailboxModel({
             owner: req.session.userId,
-            label: req.body.label,
-            location: req.body.location || ''
-        });
+            label: req.body.label.trim(), 
+            location: req.body.location ? req.body.location.trim() : '',
+            path: "/images/"+req.file.filename
+        })
 
         mailbox.save(function (err, mailbox) {
-            if (err) return res.status(500).json({ message: 'Error when creating mailbox', error: err });
+            if (err) {
+                const errorCode = err.code || (err.error && err.error.code); 
+  
+                if (errorCode === 11000) {
+                    return res.status(400).json({
+                        message: "Mailbox label already exists."
+                    });
+                }
+                if (err.name === "ValidationError") {
+                    return res.status(400).json({
+                        message: "Invalid mailbox data",
+                        error: err
+                    });
+                }
+
+                return res.status(500).json({
+                    message: "Error when creating mailbox",
+                    error: err
+                });
+            }
+
             return res.status(201).json(mailbox);
         });
     },

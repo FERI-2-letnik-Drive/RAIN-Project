@@ -16,6 +16,8 @@ mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+var MailboxModel = require('./models/mailboxModel');
 db.once('open', function() { console.log('✅ Povezan z MongoDB Atlas!'); });
 
 var indexRouter = require('./routes/index');

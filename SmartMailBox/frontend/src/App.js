@@ -6,6 +6,7 @@ import Logout from "./components/Logout"
 import Register from "./components/Register"
 import Header from "./components/Header"
 import Home from "./components/Home"
+import CreateMailBox from "./components/CreateMailBox"
 
 function App() {
 
@@ -24,10 +25,11 @@ function App() {
         <div className="App">
           <Header title="Smart MailBox Application"></Header>
           <Routes>
-            <Route path="/" exact element={<Home/>}></Route>
-            <Route path="/register" exact element={<Register/>}></Route>
-            <Route path="/login" exact element={<Login/>}></Route>
-            <Route path="/logout" exact element={<Logout/>}></Route>
+            <Route path="/" element={<Home/>}></Route>
+            <Route path="/register" element={<Register/>}></Route>
+            <Route path="/login" element={<Login/>}></Route>
+            <Route path="/logout" element={<Logout/>}></Route>
+            <Route path="/mailbox/create" element={<CreateMailBox/>}></Route>
             
           </Routes>
         </div>
