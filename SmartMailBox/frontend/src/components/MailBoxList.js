@@ -38,7 +38,7 @@ function MailboxList() {
 
     return (
         <div className="surface-card mailbox-list-card">
-            <h2 className="mailbox-list-title">My Mailboxes</h2>
+            <h2 className="card-title">My Mailboxes</h2>
 
             {error && <div className="error-text error-general">{error}</div>}
 
@@ -47,7 +47,7 @@ function MailboxList() {
             ) : (
                 mailboxes.map((mailbox) => (
                     <div key={mailbox._id} className="mailbox-item">
-                        <h3>{mailbox.label}</h3>
+                        <h3 className="mailbox-title">{mailbox.label}</h3>
                         <p>{mailbox.location ? mailbox.location : "No location"}</p>
 
                         {mailbox.path && (

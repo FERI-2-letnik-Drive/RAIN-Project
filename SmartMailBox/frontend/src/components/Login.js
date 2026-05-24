@@ -39,18 +39,25 @@ function Login(){
 
     return (
         <form onSubmit={Login} className="surface-card">
-        {userContext.user ? <Navigate replace to="/" /> : null}
-        <div className="input-group">
-            <input className="input-field" type="text" name="username" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-        </div>
-        <div className="input-group">
-            <input className="input-field" type="password" name="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        </div>
-        <div className="input-group">
-            <input className="btn-primary" type="submit" value="Submit" />
-            {error && <div className="error-text error-general">{error}</div>}
-        </div>
-    </form>
+            {userContext.user ? <Navigate replace to="/" /> : null}
+
+            <h2 className="card-title">Login</h2>
+
+            <div className="input-group">
+                <label className="input-label">Username</label>
+                <input className="input-field" type="text" name="username" placeholder="Enter username" value={username} onChange={(e) => setUsername(e.target.value)} />
+            </div>
+
+            <div className="input-group">
+                <label className="input-label">Password</label>
+                <input className="input-field" type="password" name="password" placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            </div>
+
+            <div className="input-group">
+                <input className="btn-primary" type="submit" value="Submit" />
+                {error && <div className="error-text error-general">{error}</div>}
+            </div>
+        </form>
     );
 }
 

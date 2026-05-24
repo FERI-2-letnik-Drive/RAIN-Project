@@ -92,15 +92,17 @@ function EditProfile() {
         <form onSubmit={onSubmit} className="surface-card profile-card">
             {updated ? <Navigate replace to="/profile" /> : null}
 
-            <h2 className="profile-title">Edit Profile</h2>
+            <h2 className="card-title">Edit Profile</h2>
 
             <div className="input-group">
-                <input className="input-field" type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                <label className="input-label">Username</label>
+                <input className="input-field" type="text" placeholder="Enter username" value={username} onChange={(e) => setUsername(e.target.value)} />
                 {errors.username && <div className="error-text">{errors.username}</div>}
             </div>
 
             <div className="input-group">
-                <input className="input-field" type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <label className="input-label">Email</label>
+                <input className="input-field" type="text" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 {errors.email && <div className="error-text">{errors.email}</div>}
             </div>
 

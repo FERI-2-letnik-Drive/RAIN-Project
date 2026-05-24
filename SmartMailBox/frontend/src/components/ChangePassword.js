@@ -73,20 +73,23 @@ function ChangePassword() {
         <form onSubmit={onSubmit} className="surface-card profile-card">
             {changed ? <Navigate replace to="/profile" /> : null}
 
-            <h2 className="profile-title">Change Password</h2>
+            <h2 className="card-title">Change Password</h2>
 
             <div className="input-group">
-                <input className="input-field" type="password" placeholder="Current Password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+                <label className="input-label">Current Password</label>
+                <input className="input-field" type="password" placeholder="Enter current password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
                 {errors.currentPassword && <div className="error-text">{errors.currentPassword}</div>}
             </div>
 
             <div className="input-group">
-                <input className="input-field" type="password" placeholder="New Password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+                <label className="input-label">New Password</label>
+                <input className="input-field" type="password" placeholder="Enter new password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
                 {errors.newPassword && <div className="error-text">{errors.newPassword}</div>}
             </div>
 
             <div className="input-group">
-                <input className="input-field" type="password" placeholder="Confirm New Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                <label className="input-label">Confirm New Password</label>
+                <input className="input-field" type="password" placeholder="Enter new password again" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                 {errors.confirmPassword && <div className="error-text">{errors.confirmPassword}</div>}
             </div>
 

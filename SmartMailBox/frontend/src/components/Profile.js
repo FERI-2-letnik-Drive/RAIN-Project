@@ -40,7 +40,7 @@ function Profile() {
 
     return (
         <div className="surface-card profile-card">
-            <h2 className="profile-title">User Profile</h2>
+            <h2 className="card-title">User Profile</h2>
 
             {error && <div className="error-text error-general">{error}</div>}
 

@@ -31,7 +31,7 @@ body {
     color: var(--very-dark-green); /* FIXED: Text must be dark to be visible */
     margin: 0; 
     min-height: 100vh;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 400;
     line-height: 24px;
     letter-spacing: 0.5px;
@@ -54,7 +54,8 @@ body {
     z-index: 1000;
 }
 
-/* titleLarge -> Headings */
+/*
+// titleLarge -> Headings 
 h1, h2, h3, .title-large {
     font-family: var(--font-alata);
     font-size: 24px;
@@ -63,6 +64,14 @@ h1, h2, h3, .title-large {
     letter-spacing: 0.5px;
     margin: 0;
 }
+*/
+
+.title {
+    font-size: 36px;
+    font-weight: 800;
+    margin: 0;
+}
+
 
 /* labelLarge -> Default text inside button */
 button, .btn {
@@ -108,6 +117,13 @@ small, .label-small {
     gap: 8px;
 }
 
+.input-label {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--very-dark-green);
+    margin-left: 0px;
+}
+
 /* Input Fields - Not fully white */
 .input-field {
     font-family: var(--font-alata);
@@ -116,7 +132,7 @@ small, .label-small {
     border: none;
     border-radius: 5px;
     padding: 18px;
-    font-size: 24px;
+    font-size: 18px;
     letter-spacing: 0.5px;
     outline: none !important;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -134,7 +150,7 @@ small, .label-small {
     -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important; 
     -webkit-text-fill-color: var(--very-dark-green) !important;
     
-    font: 400 24px var(--font-alata) !important;
+    font: 400 18px var(--font-alata) !important;
 }
 
 input:-webkit-autofill::first-line {font-size: 24px} /* Fixing auto-complete size, but it doesn't. */
@@ -170,15 +186,15 @@ input:-webkit-autofill::first-line {font-size: 24px} /* Fixing auto-complete siz
 .error-text {
     font-family: var(--font-alata);
     color: var(--error-red);
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
-    margin-left: 4px;
+    margin-left: 0px;
 }
 
 /* General Error (Bottom) */
 .error-general {
     text-align: center;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
     margin-top: 8px;
 }
@@ -240,6 +256,12 @@ input:-webkit-autofill::first-line {font-size: 24px} /* Fixing auto-complete siz
     gap: 12px;
 }
 
+.mailbox-title {
+    font-size: 24px; 
+    font-weight: 600;
+    margin: 0;
+}
+
 .mailbox-image {
     width: 100%;
     max-height: 320px;
@@ -250,20 +272,11 @@ input:-webkit-autofill::first-line {font-size: 24px} /* Fixing auto-complete siz
     box-sizing: border-box;
 }
 
-.mailbox-list-title {
+.card-title {
     width: 100%;
     text-align: center;
-}
-
-.profile-card {
-    width: 30vw;
-    max-width: 1000px;
-    min-height: 15vh;
-}
-
-.profile-title {
-    width: 100%;
-    text-align: center;
+    font-size: 36px;
+    margin: 8px;
 }
 
 .profile-row {
