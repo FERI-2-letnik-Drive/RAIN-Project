@@ -1,4 +1,5 @@
 var UserModel = require('../models/userModel.js');
+var bcrypt = require('bcrypt');
 
 /**
  * userController.js
@@ -251,6 +252,74 @@ module.exports = {
                     _id: user._id,
                     username: user.username,
                     email: user.email
+                });
+            });
+        });
+    },
+
+    changePassword: function (req, res) {
+        if (!req.session || !req.session.userId) {
+            return res.status(401).json({ message: "You must be logged in" });
+        }
+
+        if (!req.body.currentPassword || req.body.currentPassword.trim().length === 0) {
+            return res.status(400).json({ message: "Current password is required" });
+        }
+
+        if (!req.body.newPassword || req.body.newPassword.trim().length === 0) {
+            return res.status(400).json({ message: "New password is required" });
+        }
+
+        if (!req.body.confirmPassword || req.body.confirmPassword.trim().length === 0) {
+            return res.status(400).json({ message: "Confirm password is required" });
+        }
+
+        if (req.body.newPassword !== req.body.confirmPassword) {
+            return res.status(400).json({ message: "Passwords do not match" });
+        }
+
+        UserModel.findById(req.session.userId, function (err, user) {
+            if (err) {
+                return res.status(500).json({
+                    message: "Error finding user",
+                    error: err
+                });
+            }
+
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            bcrypt.compare(req.body.currentPassword, user.password, function (err, result) {
+                if (err) {
+                    return res.status(500).json({
+                        message: "Error checking password",
+                        error: err
+                    });
+                }
+
+                if (!result) {
+                    return res.status(400).json({ message: "Current password is incorrect" });
+                }
+
+                user.password = req.body.newPassword;
+
+                user.save(function (err) {
+                    if (err) {
+                        if (err.name === "ValidationError") {
+                            return res.status(400).json({
+                                message: "Invalid password",
+                                error: err
+                            });
+                        }
+
+                        return res.status(500).json({
+                            message: "Error changing password",
+                            error: err
+                        });
+                    }
+
+                    return res.status(200).json({ message: "Password changed successfully" });
                 });
             });
         });
