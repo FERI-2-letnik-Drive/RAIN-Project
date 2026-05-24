@@ -3,8 +3,6 @@ name: Backend Test CI
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   backend-unit-tests:
