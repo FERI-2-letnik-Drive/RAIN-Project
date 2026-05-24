@@ -9,6 +9,7 @@ import Home from "./components/Home"
 import CreateMailBox from "./components/CreateMailBox"
 import MailBoxList from "./components/MailBoxList";
 import Profile from './components/Profile';
+import EditProfile from "./components/EditProfile";
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/login" element={<Login/>}></Route>
             <Route path="/logout" element={<Logout/>}></Route>
             <Route path="/profile" element={<Profile/>}></Route>
+            <Route path="/profile/edit" element={<EditProfile />} />
             <Route path="/mailbox" element={<MailBoxList />} />
             <Route path="/mailbox/create" element={<CreateMailBox/>}></Route>
             

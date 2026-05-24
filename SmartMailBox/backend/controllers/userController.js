@@ -18,8 +18,13 @@ module.exports = {
                     error: err
                 });
             }
-
-            return res.json(users);
+            
+            return res.json(users.map(user => ({
+                _id: user._id,
+                username: user.username,
+                email: user.email
+            })));
+            // return res.json(users);
         });
     },
 
@@ -175,7 +180,7 @@ module.exports = {
             }
 
             return res.json({
-                id: user._id,
+                _id: user._id,
                 username: user.username,
                 email: user.email
             });
@@ -193,6 +198,62 @@ module.exports = {
                 }
             });
         }
+    },
+
+    updateProfile: function (req, res) {
+        if (!req.session || !req.session.userId) {
+            return res.status(401).json({ message: "You must be logged in" });
+        }
+
+        if (!req.body.username || req.body.username.trim().length === 0) {
+            return res.status(400).json({ message: "Username is required" });
+        }
+
+        if (!req.body.email || req.body.email.trim().length === 0) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+
+        UserModel.findById(req.session.userId, function (err, user) {
+            if (err) {
+                return res.status(500).json({ message: "Error finding user", error: err });
+            }
+
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            user.username = req.body.username.trim();
+            user.email = req.body.email.trim();
+
+            user.save(function (err, user) {
+                if (err) {
+                    const errorCode = err.code || (err.error && err.error.code); 
+                    if (errorCode  === 11000) {
+                        return res.status(400).json({
+                            message: "Username or email already in use"
+                        });
+                    }
+
+                    if (err.name === "ValidationError") {
+                        return res.status(400).json({
+                            message: "Invalid profile data",
+                            error: err
+                        });
+                    }
+
+                    return res.status(500).json({
+                        message: "Error updating profile",
+                        error: err
+                    });
+                }
+
+                return res.json({
+                    _id: user._id,
+                    username: user.username,
+                    email: user.email
+                });
+            });
+        });
     }
 
 };
