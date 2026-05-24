@@ -10,6 +10,7 @@ import CreateMailBox from "./components/CreateMailBox"
 import MailBoxList from "./components/MailBoxList";
 import Profile from './components/Profile';
 import EditProfile from "./components/EditProfile";
+import ChangePassword from "./components/ChangePassword";
 
 function App() {
 
@@ -34,6 +35,7 @@ function App() {
             <Route path="/logout" element={<Logout/>}></Route>
             <Route path="/profile" element={<Profile/>}></Route>
             <Route path="/profile/edit" element={<EditProfile />} />
+            <Route path="/profile/change-password" element={<ChangePassword />} />
             <Route path="/mailbox" element={<MailBoxList />} />
             <Route path="/mailbox/create" element={<CreateMailBox/>}></Route>
             

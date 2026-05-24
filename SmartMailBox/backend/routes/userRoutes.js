@@ -24,6 +24,7 @@ router.post('/login', userController.login);
  * PUT
  */
 router.put('/profile', userController.updateProfile);
+router.put('/password', userController.changePassword);
 router.put('/:id', userController.update);
 
 /*
