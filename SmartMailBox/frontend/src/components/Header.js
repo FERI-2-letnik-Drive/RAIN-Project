@@ -13,8 +13,8 @@ function Header(props) {
                         {context => (
                             context.user ?
                                 <>
-                                    <li><Link to='/mailboxes'>My Mailboxes</Link></li> 
-                                    <li><Link to='/mailboxes/create'>Add Mailbox</Link></li>
+                                    <li><Link to='/mailbox'>My Mailboxes</Link></li> 
+                                    <li><Link to='/mailbox/create'>Add Mailbox</Link></li>
                                     <li><Link to='/profile'>Profile</Link></li>
                                     <li><Link to='/logout'>Logout</Link></li>
                                 </>

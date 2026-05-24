@@ -10,22 +10,28 @@ var mailboxSchema = new Schema({
     label: {
         type: String,
         required: true,
-        minlength: 1
+        minlength: 1,
+        trim: true
     },
     location: {
         type: String,
-        default: ''
+        default: '',
+        trim: true
     },
     isLocked: {
         type: Boolean,
         default: true
     },
+    'path' : String,    
     // tehtnica(random teza)
     weightKg: {
         type: Number,
         default: 0
     }
 }, { timestamps: true });
+
+// Ensures mailbox labels are unique per user.
+mailboxSchema.index({ owner: 1, label: 1 }, { unique: true });
 
 var Mailbox = mongoose.model('mailbox', mailboxSchema);
 module.exports = Mailbox;

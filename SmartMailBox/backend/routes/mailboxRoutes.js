@@ -1,13 +1,29 @@
 var express = require('express');
+// Vključimo multer za file upload
+var multer = require('multer');
+var upload = multer({dest: 'public/images/'});
+
 var router = express.Router();
 var mailboxController = require('../controllers/mailboxController.js');
+
+function requiresLogin(req, res, next){
+    if(req.session && req.session.userId){
+        return next();
+    } else{
+        var err = new Error("You must be logged in to view this page");
+        err.status = 401;
+        return next(err);
+    }
+}
 
 // CRUD
 router.get('/', mailboxController.list);
 router.get('/:id', mailboxController.show);
-router.post('/', mailboxController.create);
 router.put('/:id', mailboxController.update);
 router.delete('/:id', mailboxController.remove);
+
+// create mailbox
+router.post('/', requiresLogin, upload.single('image'), mailboxController.create)
 
 // Actions
 router.post('/:id/unlock', mailboxController.unlock);
