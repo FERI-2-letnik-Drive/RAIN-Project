@@ -23,6 +23,7 @@ router.post('/login', userController.login);
 /*
  * PUT
  */
+router.put('/profile', userController.updateProfile);
 router.put('/:id', userController.update);
 
 /*

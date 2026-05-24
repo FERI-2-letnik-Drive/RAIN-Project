@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../userContext";
 import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
     const userContext = useContext(UserContext);
     const [profile, setProfile] = useState({});
     const [error, setError] = useState("");
+    const navigate = useNavigate(); 
 
     useEffect(() => {
         async function getProfile() {
@@ -52,7 +54,8 @@ function Profile() {
                 <span className="profile-value">{profile.email}</span>
             </div>
             <div className="input-group">
-                 <input className="btn-primary" type="button" value="Edit Profile" />
+                <input className="btn-primary" type="button" value="Edit Profile" onClick={() => navigate("/profile/edit")} />
+                <input className="btn-primary" type="button" value="Change Password" onClick={() => navigate("/profile/change-password")} />
             </div>
             
         </div>
