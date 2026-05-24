@@ -61,13 +61,17 @@ function CreateMailBox() {
             {!userContext.user ? <Navigate replace to="/login" /> : null}
             {created ? <Navigate replace to="/mailbox" /> : null}
 
+            <h2 className="card-title">Add MailBox</h2>
+
             <div className="input-group">
-                <input className="input-field" type="text" name="label" placeholder="Label" value={label} onChange={(e) => setLabel(e.target.value)} />
+                <label className="input-label">Label</label>
+                <input className="input-field" type="text" name="label" placeholder="Enter label" value={label} onChange={(e) => setLabel(e.target.value)} />
                 {errors.label && <div className="error-text">{errors.label}</div>}
             </div>
 
             <div className="input-group">
-                <input className="input-field" type="text" name="location" placeholder="Location (optional)" value={location} onChange={(e) => setLocation(e.target.value)} />
+                <label className="input-label">Location</label>
+                <input className="input-field" type="text" name="location" placeholder="Enter location (optional)" value={location} onChange={(e) => setLocation(e.target.value)} />
                 { /*errors.location && <div className="error-text">{errors.location}</div> */}
             </div>
 

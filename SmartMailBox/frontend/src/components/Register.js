@@ -43,26 +43,33 @@ function Register() {
     }
 
     return(
-       <form onSubmit={Register} className="surface-card">
-        <div className="input-group">
-            <input className="input-field" type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            {errors.email && <div className="error-text">{errors.email}</div>}
-        </div>
+        <form onSubmit={Register} className="surface-card">
 
-        <div className="input-group">
-            <input className="input-field" type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-            {errors.username && <div className="error-text">{errors.username}</div>}
-        </div>
+            <h2 className="card-title">Register</h2>
+            
+            <div className="input-group">
+                <label className="input-label">Email</label>
+                <input className="input-field" type="text" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                {errors.email && <div className="error-text">{errors.email}</div>}
+            </div>
 
-        <div className="input-group">
-            <input className="input-field" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            {errors.password && <div className="error-text">{errors.password}</div>}
-        </div>
-        <div className="input-group">
-            <input className="btn-primary" type="submit" value="Register" />
-            {errors.general && <div className="error-text error-general">{errors.general}</div>}
-        </div>
-    </form>
+            <div className="input-group">
+                <label className="input-label">Username</label>
+                <input className="input-field" type="text" placeholder="Enter username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                {errors.username && <div className="error-text">{errors.username}</div>}
+            </div>
+
+            <div className="input-group">
+                <label className="input-label">Password</label>
+                <input className="input-field" type="password" placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                {errors.password && <div className="error-text">{errors.password}</div>}
+            </div>
+
+            <div className="input-group">
+                <input className="btn-primary" type="submit" value="Register" />
+                {errors.general && <div className="error-text error-general">{errors.general}</div>}
+            </div>
+        </form>
     );
 }
 
