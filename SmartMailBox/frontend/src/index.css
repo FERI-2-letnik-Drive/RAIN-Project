@@ -222,3 +222,35 @@ input:-webkit-autofill::first-line {font-size: 24px} /* Fixing auto-complete siz
     font-size: 14px;
     color: var(--very-dark-green);
 }
+
+.mailbox-list-card {
+    width: min(95vw, 1200px);
+    max-width: 1200px;
+    min-height: 80vh;
+    margin-bottom: 32px;
+}
+
+.mailbox-item {
+    background-color: var(--jade);
+    border-radius: 5px;
+    padding: 24px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.mailbox-image {
+    width: 100%;
+    max-height: 320px;
+    object-fit: contain;
+    border-radius: 5px;
+    background-color: white;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+.mailbox-list-title {
+    width: 100%;
+    text-align: center;
+}
