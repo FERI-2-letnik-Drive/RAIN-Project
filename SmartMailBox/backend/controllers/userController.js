@@ -411,7 +411,11 @@ module.exports = {
 
             const user = await UserModel.findById(req.session.userId).select("-password");
 
-            return res.status(200).json(user);
+            return res.status(200).json({
+                verified: true,
+                message: "Face verification successful.",
+                user: user
+            });
         } catch (err) {
             console.error(err);
             return res.status(500).json({
