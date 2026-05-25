@@ -62,8 +62,13 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo');
 var sessionConfig = {
   secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: false
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: false, // because mobile app uses http:// during development
+    sameSite: "lax"
+  }
 };
 
 if (process.env.NODE_ENV !== "test") {
