@@ -14,6 +14,10 @@ var userSchema = new Schema({
 		required: true,
 		minlength: 1
 	},
+	twoFactorEnabled: {
+		type: Boolean, 
+		default: false
+	},
 	email: {
 		type: String,
 		unique: true,

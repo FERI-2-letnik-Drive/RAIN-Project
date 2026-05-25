@@ -323,6 +323,71 @@ module.exports = {
                 });
             });
         });
-    }
+    }, 
+
+    mobileLogin: function (req, res, next) {
+        UserModel.authenticate(req.body.username, req.body.password, function (err, user) {
+            if (err || !user) {
+                console.log(err.message)
+                return res.status(401).json({ message: "Wrong username or password" });
+            }
+
+            if (user.twoFactorEnabled) {
+                // we use pendingMobile2FAUserId, because user is still not logged in!
+                req.session.pendingMobile2FAUserId = user._id;
+
+                return res.status(200).json({
+                    requires2FA: true,
+                    message: "Password correct. Face verification required."
+                });
+            }
+
+            req.session.userId = user._id;
+
+            return res.status(200).json({
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                twoFactorEnabled: user.twoFactorEnabled
+            });
+        });
+    },
+
+    mobileFaceVerifyLogin: async function (req, res) {
+        try {
+            if (!req.session || !req.session.pendingMobile2FAUserId) {
+                return res.status(401).json({ message: "No pending mobile login." });
+            }
+
+            const orvApiRes = await fetch(process.env.ORV_API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(req.body)
+            });
+
+            const orvData = await orvApiRes.json();
+
+            if (!orvApiRes.ok || !orvData.match) {
+                return res.status(401).json({ message: "Face verification failed." });
+            }
+
+            req.session.userId = req.session.pendingMobile2FAUserId;
+            delete req.session.pendingMobile2FAUserId;
+
+            // do not return password hash ("-password -email") if I wouldn't want email
+            const user = await UserModel.findById(req.session.userId).select("-password");
+
+            return res.status(200).json(user);
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({
+                message: "Face verification service error"
+            });
+        }
+    },
+    
+    
 
 };
