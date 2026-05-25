@@ -337,7 +337,7 @@ module.exports = {
                 req.session.pendingMobile2FAUserId = user._id;
 
                 return res.status(200).json({
-                    requires2FA: true,
+                    twoFactorRequired: true,
                     message: "Password correct. Face verification required."
                 });
             }
