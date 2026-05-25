@@ -2,6 +2,9 @@ var express = require('express');
 var router = express.Router();
 var userController = require('../controllers/userController.js');
 
+var multer = require('multer');
+var upload = multer({ storage: multer.memoryStorage() });
+
 /*
  * GET
  */
@@ -20,7 +23,7 @@ router.get('/:id', userController.show);
 router.post('/register', userController.create);
 router.post('/login', userController.login);
 router.post('/mobile-login', userController.mobileLogin);
-router.post('/mobile-login/face-verify', userController.mobileFaceVerifyLogin);
+router.post('/mobile-login/face-verify', upload.single('current_image'), userController.mobileFaceVerifyLogin);
 
 /*
  * PUT

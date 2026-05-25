@@ -18,6 +18,10 @@ var userSchema = new Schema({
 		type: Boolean, 
 		default: false
 	},
+	referenceFaceImageUrl: {
+		type: String,
+		default: ""
+	},
 	email: {
 		type: String,
 		unique: true,

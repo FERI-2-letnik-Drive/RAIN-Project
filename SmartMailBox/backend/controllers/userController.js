@@ -359,12 +359,45 @@ module.exports = {
                 return res.status(401).json({ message: "No pending mobile login." });
             }
 
+            if (!req.file) {
+                return res.status(400).json({ message: "Face image is required." });
+            }
+
+            const pendingUser = await UserModel.findById(req.session.pendingMobile2FAUserId);
+
+            if (!pendingUser) {
+                return res.status(401).json({ message: "Pending user not found." });
+            }
+
+            if (!pendingUser.referenceFaceImageUrl) {
+                return res.status(400).json({ message: "Reference face image is missing." });
+            }
+
+            const referenceRes = await fetch(pendingUser.referenceFaceImageUrl);
+
+            if (!referenceRes.ok) {
+                return res.status(500).json({ message: "Could not load reference face image." });
+            }
+
+            const referenceBuffer = Buffer.from(await referenceRes.arrayBuffer());
+
+            const formData = new FormData();
+
+            formData.append(
+                "reference_image", // field name
+                new Blob([referenceBuffer]), // for sending file
+                "reference_image.jpg"
+            );
+
+            formData.append(
+                "current_image",
+                new Blob([req.file.buffer]),
+                req.file.originalname || "current_image.jpg"
+            );
+
             const orvApiRes = await fetch(process.env.ORV_API_URL, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(req.body)
+                body: formData
             });
 
             const orvData = await orvApiRes.json();
@@ -376,7 +409,6 @@ module.exports = {
             req.session.userId = req.session.pendingMobile2FAUserId;
             delete req.session.pendingMobile2FAUserId;
 
-            // do not return password hash ("-password -email") if I wouldn't want email
             const user = await UserModel.findById(req.session.userId).select("-password");
 
             return res.status(200).json(user);
@@ -386,8 +418,6 @@ module.exports = {
                 message: "Face verification service error"
             });
         }
-    },
+    }
     
-    
-
 };
