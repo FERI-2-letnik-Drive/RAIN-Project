@@ -1,0 +1,16 @@
+services:
+  backend:
+    build: 
+      context: .
+      dockerfile: /backend/Dockerfile
+    container_name: smartmailbox_backend_container
+    ports:
+      - "3001:3001"
+    env_file:
+      - /backend/.env
+  
+  #frontend: 
+  #  - Simonn
+
+  #database: 
+  #  - tega verjetno neboma mela, ker že runa na serverju.

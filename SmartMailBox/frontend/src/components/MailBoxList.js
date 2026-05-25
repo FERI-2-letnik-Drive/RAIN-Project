@@ -52,7 +52,7 @@ function MailboxList() {
 
                         {mailbox.path && (
                             <img
-                                src={`http://localhost:3001${mailbox.path}`}
+                                src={mailbox.path}
                                 alt={mailbox.label}
                                 className="mailbox-image"
                             />
