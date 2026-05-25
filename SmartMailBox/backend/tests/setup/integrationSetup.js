@@ -8,10 +8,10 @@ let Mailbox;
 
 async function setupIntegrationTest() {
     mongoServer = await MongoMemoryServer.create();
-
+    
+    process.env.NODE_ENV = "test";
     process.env.MONGODB_URI = mongoServer.getUri();
     process.env.SESSION_SECRET = "testsecret";
-    process.env.NODE_ENV = "test";
 
     app = require("../../app");
     User = require("../../models/userModel");
