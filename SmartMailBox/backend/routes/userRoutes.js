@@ -19,6 +19,8 @@ router.get('/:id', userController.show);
  */
 router.post('/register', userController.create);
 router.post('/login', userController.login);
+router.post('/mobile-login', userController.mobileLogin);
+router.post('/mobile-login/face-verify', userController.mobileFaceVerifyLogin);
 
 /*
  * PUT
