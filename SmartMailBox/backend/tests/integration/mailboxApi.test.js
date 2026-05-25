@@ -83,7 +83,7 @@ describe("Mailbox API", () => {
         expect(res.statusCode).toBe(201);
         expect(res.body.label).toBe("Room 1");
         expect(res.body.location).toBe("Office");
-        expect(res.body.path).toContain("/images/");
+        expect(res.body.path).toContain("res.cloudinary.com");
         expect(res.body.owner).toBeDefined();
     });
 
