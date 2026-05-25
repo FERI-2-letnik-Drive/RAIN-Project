@@ -1,4 +1,6 @@
-require('dotenv').config();
+if (process.env.NODE_ENV !== "test") {
+  require("dotenv").config();
+}
 var dns = require('dns');
 dns.setServers(['8.8.8.8', '1.1.1.1']);
 
@@ -17,8 +19,7 @@ mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-var MailboxModel = require('./models/mailboxModel');
-db.once('open', function() { console.log('✅ Povezan z MongoDB Atlas!'); });
+db.once('open', function() { console.log('✅ Povezan z MongoDB!'); });
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/userRoutes');
@@ -59,12 +60,17 @@ app.use(express.static(path.join(__dirname, 'public')));
  */
 var session = require('express-session');
 var MongoStore = require('connect-mongo');
-app.use(session({
+var sessionConfig = {
   secret: process.env.SESSION_SECRET,
   resave: true,
-  saveUninitialized: false,
-  store: MongoStore.create({mongoUrl: mongoDB})
-}));
+  saveUninitialized: false
+};
+
+if (process.env.NODE_ENV !== "test") {
+  sessionConfig.store = MongoStore.create({ mongoUrl: mongoDB });
+}
+
+app.use(session(sessionConfig));
 
 //Shranimo sejne spremenljivke v locals
 //Tako lahko do njih dostopamo v vseh view-ih (glej layout.hbs)

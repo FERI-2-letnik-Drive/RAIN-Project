@@ -1,6 +1,31 @@
 const request = require("supertest");
 const path = require("path");
 
+jest.mock("../../utils/cloudinary", () => {
+    const { Writable } = require("stream");
+
+    return {
+        uploader: {
+            upload_stream: jest.fn((options, callback) => {
+                const fakeStream = new Writable({
+                    write(chunk, encoding, next) {
+                        next();
+                    }
+                });
+
+                process.nextTick(() => {
+                    callback(null, {
+                        secure_url: "https://res.cloudinary.com/test/image/upload/fake.png",
+                        public_id: "smartmailbox/fake"
+                    });
+                });
+
+                return fakeStream;
+            }),
+            destroy: jest.fn()
+        }
+    };
+});
 const {
     setupIntegrationTest,
     clearDatabase,
@@ -23,6 +48,7 @@ beforeEach(async () => {
 afterAll(async () => {
     await teardownIntegrationTest();
 });
+
 async function registerAndLogin(username, email) {
     const agent = request.agent(app);
 
@@ -84,6 +110,7 @@ describe("Mailbox API", () => {
         expect(res.body.label).toBe("Room 1");
         expect(res.body.location).toBe("Office");
         expect(res.body.path).toContain("res.cloudinary.com");
+        expect(res.body.cloudinaryPublicId).toBeDefined();
         expect(res.body.owner).toBeDefined();
     });
 
