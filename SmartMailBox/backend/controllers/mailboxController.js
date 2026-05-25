@@ -1,10 +1,28 @@
+const cloudinary = require("../utils/cloudinary");
+const streamifier = require("streamifier");
+
 var MailboxModel = require('../models/mailboxModel.js');
 var PermissionModel = require('../models/permissionModel.js');
 var OpenLogModel = require('../models/openLogModel.js');
 
+
 // 0-30 kg (fake tehtnica)
 function generateFakeWeight() {
     return Math.round(Math.random() * 30 * 100) / 100;
+}
+
+function uploadToCloudinary(fileBuffer) {
+    return new Promise(function (resolve, reject) {
+        var uploadStream = cloudinary.uploader.upload_stream(
+            { folder: "smartmailbox" },
+            function (error, result) {
+                if (error) return reject(error);
+                resolve(result);
+            }
+        );
+
+        streamifier.createReadStream(fileBuffer).pipe(uploadStream);
+    });
 }
 
 module.exports = {
@@ -53,60 +71,55 @@ module.exports = {
                     });
             });
     },
-
     /**
      * mailboxController.create()
      */
-    create: function (req, res) {
-        if (!req.session || !req.session.userId) {
-            return res.status(401).json({ message: "You must be logged in" });
-        }
+    create: async function (req, res) {
+        try {
+            if (!req.session || !req.session.userId) {
+                return res.status(401).json({ message: "You must be logged in" });
+            }
 
-        if (!req.body.label || req.body.label.trim().length === 0) {
-            return res.status(400).json({ message: "Mailbox label is required" });
-        }
+            if (!req.body.label || req.body.label.trim().length === 0) {
+                return res.status(400).json({ message: "Mailbox label is required" });
+            }
 
-        /*
-        if (!req.body.location || req.body.location.trim().length === 0) {
-            return res.status(400).json({ message: "Mailbox location is required" });
-        }
-        */
+            if (!req.file) {
+                return res.status(400).json({ message: "QR code image is required" });
+            }
 
-        if (!req.file) {
-            return res.status(400).json({ message: "QR code image is required" });
-        }
+            var label = req.body.label.trim();
 
-        var mailbox = new MailboxModel({
-            owner: req.session.userId,
-            label: req.body.label.trim(), 
-            location: req.body.location ? req.body.location.trim() : '',
-            path: "/images/"+req.file.filename
-        })
+            var existingMailbox = await MailboxModel.findOne({
+                owner: req.session.userId,
+                label: label
+            });
 
-        mailbox.save(function (err, mailbox) {
-            if (err) {
-                const errorCode = err.code || (err.error && err.error.code); 
-  
-                if (errorCode === 11000) {
-                    return res.status(400).json({
-                        message: "Mailbox label already exists."
-                    });
-                }
-                if (err.name === "ValidationError") {
-                    return res.status(400).json({
-                        message: "Invalid mailbox data",
-                        error: err
-                    });
-                }
-
-                return res.status(500).json({
-                    message: "Error when creating mailbox",
-                    error: err
+            if (existingMailbox) {
+                return res.status(400).json({
+                    message: "Mailbox label already exists."
                 });
             }
 
+            var uploadResult = await uploadToCloudinary(req.file.buffer);
+
+            var mailbox = new MailboxModel({
+                owner: req.session.userId,
+                label: label,
+                location: req.body.location ? req.body.location.trim() : '',
+                path: uploadResult.secure_url,
+                cloudinaryPublicId: uploadResult.public_id
+            });
+
+            await mailbox.save();
+
             return res.status(201).json(mailbox);
-        });
+        } catch (err) {
+            return res.status(500).json({
+                message: "Error when creating mailbox",
+                error: err.message
+            });
+        }
     },
 
     /**

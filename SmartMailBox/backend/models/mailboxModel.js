@@ -22,7 +22,13 @@ var mailboxSchema = new Schema({
         type: Boolean,
         default: true
     },
-    'path' : String,    
+    path: {
+        type: String,
+        required: true
+    },
+    cloudinaryPublicId: {
+        type: String
+    },
     // tehtnica(random teza)
     weightKg: {
         type: Number,
