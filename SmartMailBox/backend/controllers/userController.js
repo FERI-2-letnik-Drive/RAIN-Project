@@ -328,7 +328,7 @@ module.exports = {
     mobileLogin: function (req, res, next) {
         UserModel.authenticate(req.body.username, req.body.password, function (err, user) {
             if (err || !user) {
-                console.log(err.message)
+                //console.log(err.message)
                 return res.status(401).json({ message: "Wrong username or password" });
             }
 
