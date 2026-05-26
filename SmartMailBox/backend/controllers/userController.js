@@ -383,16 +383,22 @@ module.exports = {
 
             const formData = new FormData();
 
+            const referenceContentType =
+            referenceRes.headers.get("content-type") || "application/octet-stream";
+
+            const currentContentType =
+                req.file.mimetype || "application/octet-stream";
+
             formData.append(
-                "reference_image", // field name
-                new Blob([referenceBuffer]), // for sending file
-                "reference_image.jpg"
+                "reference_image",
+                new Blob([referenceBuffer], { type: referenceContentType }),
+                "reference_image"
             );
 
             formData.append(
                 "current_image",
-                new Blob([req.file.buffer]),
-                req.file.originalname || "current_image.jpg"
+                new Blob([req.file.buffer], { type: currentContentType }),
+                req.file.originalname || "current_image"
             );
 
             const orvApiRes = await fetch(process.env.ORV_API_URL, {
