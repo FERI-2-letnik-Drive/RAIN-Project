@@ -152,25 +152,35 @@ module.exports = {
     /**
      * mailboxController.remove()
      */
-    remove: function (req, res) {
-        if (!req.session.userId) {
-            return res.status(401).json({ message: 'Not logged in' });
-        }
+    remove: async function (req, res) {
+        try {
+            if (!req.session.userId) {
+                return res.status(401).json({ message: 'Not logged in' });
+            }
 
-        MailboxModel.findById(req.params.id)
-            .exec(function (err, mailbox) {
-                if (err) return res.status(500).json({ message: 'Error when getting mailbox', error: err });
-                if (!mailbox) return res.status(404).json({ message: 'Mailbox not found' });
+            const mailbox = await MailboxModel.findById(req.params.id);
 
-                if (mailbox.owner.toString() !== req.session.userId.toString()) {
-                    return res.status(403).json({ message: 'Only the owner can delete this mailbox' });
-                }
+            if (!mailbox) {
+                return res.status(404).json({ message: 'Mailbox not found' });
+            }
 
-                MailboxModel.findByIdAndRemove(req.params.id, function (err) {
-                    if (err) return res.status(500).json({ message: 'Error when deleting mailbox', error: err });
-                    return res.status(204).json();
-                });
+            if (mailbox.owner.toString() !== req.session.userId.toString()) {
+                return res.status(403).json({ message: 'Only the owner can delete this mailbox' });
+            }
+
+            if (mailbox.cloudinaryPublicId) {
+                await cloudinary.uploader.destroy(mailbox.cloudinaryPublicId);
+            }
+
+            await MailboxModel.findByIdAndRemove(req.params.id);
+
+            return res.status(204).send();
+        } catch (err) {
+            return res.status(500).json({
+                message: 'Error when deleting mailbox',
+                error: err.message
             });
+        }
     },
 
     /**
