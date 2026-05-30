@@ -8,6 +8,7 @@ import Header from "./components/Header"
 import Home from "./components/Home"
 import CreateMailBox from "./components/CreateMailBox"
 import MailBoxList from "./components/MailBoxList";
+import MailBoxDetail from "./components/MailBoxDetail";
 import Profile from './components/Profile';
 import EditProfile from "./components/EditProfile";
 import ChangePassword from "./components/ChangePassword";
@@ -38,6 +39,7 @@ function App() {
             <Route path="/profile/change-password" element={<ChangePassword />} />
             <Route path="/mailbox" element={<MailBoxList />} />
             <Route path="/mailbox/create" element={<CreateMailBox/>}></Route>
+            <Route path="/mailbox/:id" element={<MailBoxDetail />} />
             
           </Routes>
         </div>
