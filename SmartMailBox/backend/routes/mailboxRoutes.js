@@ -18,6 +18,8 @@ function requiresLogin(req, res, next){
 
 // CRUD
 router.get('/', mailboxController.list);
+// mailboxes shared with me (must be before '/:id' so 'shared' isn't treated as an id)
+router.get('/shared', mailboxController.listShared);
 router.get('/:id', mailboxController.show);
 router.put('/:id', mailboxController.update);
 router.delete('/:id', mailboxController.remove);

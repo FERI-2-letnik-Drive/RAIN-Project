@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "../userContext";
+import MailBoxPermissions from "./MailBoxPermissions";
 
 function MailBoxDetail() {
     const userContext = useContext(UserContext);
@@ -126,6 +127,10 @@ function MailBoxDetail() {
                             onClick={() => navigate("/mailbox")}
                         />
                     </div>
+
+                    {userContext.user && String(mailbox.owner) === String(userContext.user._id) && (
+                        <MailBoxPermissions mailboxId={mailbox._id} ownerId={mailbox.owner} />
+                    )}
                 </>
             )}
         </div>
