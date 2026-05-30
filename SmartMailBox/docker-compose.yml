@@ -1,16 +1,25 @@
 services:
   backend:
-    build: 
-      context: .
-      dockerfile: /backend/Dockerfile
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: smartmailbox_backend_container
     ports:
       - "3001:3001"
     env_file:
-      - /backend/.env
-  
-  #frontend: 
-  #  - Simonn
+      - ./backend/.env
+    restart: unless-stopped
 
-  #database: 
-  #  - tega verjetno neboma mela, ker že runa na serverju.
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: smartmailbox_frontend_container
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # database:
+  #   - tega verjetno neboma mela, ker ze runa na serverju (MongoDB Atlas).
