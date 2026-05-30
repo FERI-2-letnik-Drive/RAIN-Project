@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "../userContext";
 import MailBoxPermissions from "./MailBoxPermissions";
+import MailBoxLogs from "./MailBoxLogs";
 
 function MailBoxDetail() {
     const userContext = useContext(UserContext);
@@ -12,6 +13,7 @@ function MailBoxDetail() {
     const [error, setError] = useState("");
     const [unlocking, setUnlocking] = useState(false);
     const [unlockMessage, setUnlockMessage] = useState("");
+    const [logsReload, setLogsReload] = useState(0);
 
     useEffect(() => {
         async function fetchMailbox() {
@@ -57,6 +59,7 @@ function MailBoxDetail() {
 
             setMailbox((prev) => ({ ...prev, isLocked: false, weightKg: data.weightKg }));
             setUnlockMessage(`Unlocked at ${new Date(data.openedAt).toLocaleString()} (${data.method})`);
+            setLogsReload((n) => n + 1);
         } catch (err) {
             console.error(err);
             setError("Server error");
@@ -129,7 +132,10 @@ function MailBoxDetail() {
                     </div>
 
                     {userContext.user && String(mailbox.owner) === String(userContext.user._id) && (
-                        <MailBoxPermissions mailboxId={mailbox._id} ownerId={mailbox.owner} />
+                        <>
+                            <MailBoxPermissions mailboxId={mailbox._id} ownerId={mailbox.owner} />
+                            <MailBoxLogs mailboxId={mailbox._id} reloadTrigger={logsReload} />
+                        </>
                     )}
                 </>
             )}
