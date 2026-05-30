@@ -45,6 +45,50 @@ module.exports = {
     },
 
     /**
+     * mailboxController.listShared()
+     * Returns mailboxes the current user has a valid (active, not expired) permission for.
+     */
+    listShared: async function (req, res) {
+        try {
+            if (!req.session.userId) {
+                return res.status(401).json({ message: 'Not logged in' });
+            }
+
+            var permissions = await PermissionModel.find({
+                userId: req.session.userId,
+                isActive: true
+            });
+
+            // keep only currently valid permissions (handles temporary date ranges)
+            var validPermissions = permissions.filter(function (p) {
+                return p.isValid();
+            });
+
+            var mailboxIds = validPermissions.map(function (p) {
+                return p.mailboxId;
+            });
+
+            var mailboxes = await MailboxModel.find({ _id: { $in: mailboxIds } });
+
+            // attach the access type for each mailbox
+            var permByMailbox = {};
+            validPermissions.forEach(function (p) {
+                permByMailbox[p.mailboxId.toString()] = p.type;
+            });
+
+            var result = mailboxes.map(function (m) {
+                var obj = m.toObject();
+                obj.accessType = permByMailbox[m._id.toString()] || null;
+                return obj;
+            });
+
+            return res.json(result);
+        } catch (err) {
+            return res.status(500).json({ message: 'Error when getting shared mailboxes', error: err.message });
+        }
+    },
+
+    /**
      * mailboxController.show()
      */
     show: function (req, res) {

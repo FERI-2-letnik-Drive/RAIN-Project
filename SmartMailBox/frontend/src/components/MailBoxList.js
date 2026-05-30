@@ -5,6 +5,7 @@ import { UserContext } from "../userContext";
 function MailboxList() {
     const userContext = useContext(UserContext);
     const [mailboxes, setMailboxes] = useState([]);
+    const [shared, setShared] = useState([]);
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -29,7 +30,25 @@ function MailboxList() {
             }
         }
 
+        async function fetchShared() {
+            try {
+                const res = await fetch("http://localhost:3001/mailboxes/shared", {
+                    method: "GET",
+                    credentials: "include"
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    setShared(data);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
         fetchMailboxes();
+        fetchShared();
     }, []);
 
     if (!userContext.user) {
@@ -54,6 +73,37 @@ function MailboxList() {
                     >
                         <h3 className="mailbox-title">{mailbox.label}</h3>
                         <p>{mailbox.location ? mailbox.location : "No location"}</p>
+
+                        {mailbox.path && (
+                            <img
+                                src={mailbox.path}
+                                alt={mailbox.label}
+                                className="mailbox-image"
+                            />
+                        )}
+                    </Link>
+                ))
+            )}
+
+            <h2 className="card-title" style={{ marginTop: "32px" }}>Shared with me</h2>
+
+            {shared.length === 0 ? (
+                <p>No mailboxes shared with you.</p>
+            ) : (
+                shared.map((mailbox) => (
+                    <Link
+                        key={mailbox._id}
+                        to={`/mailbox/${mailbox._id}`}
+                        className="mailbox-item"
+                        style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                        <h3 className="mailbox-title">{mailbox.label}</h3>
+                        <p>{mailbox.location ? mailbox.location : "No location"}</p>
+                        {mailbox.accessType && (
+                            <p className="profile-label" style={{ fontSize: "16px" }}>
+                                Access: {mailbox.accessType}
+                            </p>
+                        )}
 
                         {mailbox.path && (
                             <img
