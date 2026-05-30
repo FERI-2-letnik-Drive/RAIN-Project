@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { UserContext } from "../userContext";
 
 function MailboxList() {
@@ -46,7 +46,12 @@ function MailboxList() {
                 <p>No mailboxes yet.</p>
             ) : (
                 mailboxes.map((mailbox) => (
-                    <div key={mailbox._id} className="mailbox-item">
+                    <Link
+                        key={mailbox._id}
+                        to={`/mailbox/${mailbox._id}`}
+                        className="mailbox-item"
+                        style={{ textDecoration: "none", color: "inherit" }}
+                    >
                         <h3 className="mailbox-title">{mailbox.label}</h3>
                         <p>{mailbox.location ? mailbox.location : "No location"}</p>
 
@@ -57,7 +62,7 @@ function MailboxList() {
                                 className="mailbox-image"
                             />
                         )}
-                    </div>
+                    </Link>
                 ))
             )}
         </div>
