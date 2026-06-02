@@ -105,16 +105,21 @@ module.exports = {
                     return res.json(mailbox);
                 }
 
-                PermissionModel.findOne({ mailboxId: mailbox._id, userId: req.session.userId, isActive: true })
-                    .exec(function (err, permission) {
+                // Check ALL active permissions for this user, not just the first one.
+                // A user may have several (e.g. an old expired temporary + a valid permanent);
+                // access should be granted if ANY of them is currently valid.
+                PermissionModel.find({ mailboxId: mailbox._id, userId: req.session.userId, isActive: true })
+                    .exec(function (err, permissions) {
                         if (err) return res.status(500).json({ message: 'Error checking permission', error: err });
-                        if (!permission || !permission.isValid()) {
+                        var hasValid = permissions.some(function (p) { return p.isValid(); });
+                        if (!hasValid) {
                             return res.status(403).json({ message: 'Access denied' });
                         }
                         return res.json(mailbox);
                     });
             });
     },
+
     /**
      * mailboxController.create()
      */
@@ -276,10 +281,11 @@ module.exports = {
                     return doUnlock('owner');
                 }
 
-                PermissionModel.findOne({ mailboxId: mailbox._id, userId: req.session.userId, isActive: true })
-                    .exec(function (err, permission) {
+                PermissionModel.find({ mailboxId: mailbox._id, userId: req.session.userId, isActive: true })
+                    .exec(function (err, permissions) {
                         if (err) return res.status(500).json({ message: 'Error checking permission', error: err });
-                        if (!permission || !permission.isValid()) {
+                        var hasValid = permissions.some(function (p) { return p.isValid(); });
+                        if (!hasValid) {
                             return res.status(403).json({ message: 'Access denied: no valid permission' });
                         }
                         return doUnlock('permission');

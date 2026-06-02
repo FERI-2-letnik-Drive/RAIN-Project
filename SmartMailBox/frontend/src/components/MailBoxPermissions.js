@@ -66,8 +66,10 @@ function MailBoxPermissions({ mailboxId, ownerId }) {
                 setError("Start date must be before end date");
                 return;
             }
-            body.validFrom = validFrom;
-            body.validUntil = validUntil;
+            // Convert the local datetime-local value to an absolute UTC timestamp,
+            // otherwise a UTC server misreads the wall-clock time and the window is offset.
+            body.validFrom = new Date(validFrom).toISOString();
+            body.validUntil = new Date(validUntil).toISOString();
         }
 
         try {
