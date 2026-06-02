@@ -10,7 +10,7 @@ function Header(props) {
                     {context => (
                         context.user ?
                             <>
-                                <NavLink to="/" end className="nav-link">Home</NavLink>
+                                {/* <NavLink to="/" end className="nav-link">Home</NavLink> */}
                                 <NavLink to="/mailbox" className="nav-link">My Mailboxes</NavLink>
                                 <NavLink to="/mailbox/create" className="nav-link">Add Mailbox</NavLink>
                                 <NavLink to="/profile" className="nav-link">Profile</NavLink>
@@ -18,7 +18,7 @@ function Header(props) {
                             </>
                         :
                             <>
-                                <NavLink to="/" end className="nav-link">Home</NavLink>
+                                {/* <NavLink to="/" end className="nav-link">Home</NavLink> */}
                                 <NavLink to="/login" className="nav-link">Login</NavLink>
                                 <NavLink to="/register" className="nav-link nav-link-cta">Register</NavLink>
                             </>

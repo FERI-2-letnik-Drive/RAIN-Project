@@ -12,6 +12,7 @@ function MailBoxDetail() {
     const [mailbox, setMailbox] = useState(null);
     const [error, setError] = useState("");
     const [unlocking, setUnlocking] = useState(false);
+    const [locking, setLocking] = useState(false);
     const [unlockMessage, setUnlockMessage] = useState("");
     const [logsReload, setLogsReload] = useState(0);
 
@@ -39,6 +40,33 @@ function MailBoxDetail() {
 
         fetchMailbox();
     }, [id]);
+
+    async function handleLock() {
+        setLocking(true);
+        setUnlockMessage("");
+        setError("");
+        try {
+            const res = await fetch(`http://localhost:3001/mailboxes/${id}/lock`, {
+                method: "POST",
+                credentials: "include"
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                setError(data.message || "Failed to lock mailbox");
+                return;
+            }
+
+            setMailbox((prev) => ({ ...prev, isLocked: true }));
+            setUnlockMessage("Mailbox locked");
+        } catch (err) {
+            console.error(err);
+            setError("Server error");
+        } finally {
+            setLocking(false);
+        }
+    }
 
     async function handleUnlock() {
         setUnlocking(true);
@@ -121,7 +149,14 @@ function MailBoxDetail() {
                             type="button"
                             value={unlocking ? "Unlocking..." : "Unlock Mailbox"}
                             onClick={handleUnlock}
-                            disabled={unlocking}
+                            disabled={unlocking || locking || !mailbox.isLocked}
+                        />
+                        <input
+                            className="btn-primary"
+                            type="button"
+                            value={locking ? "Locking..." : "Lock Mailbox"}
+                            onClick={handleLock}
+                            disabled={unlocking || locking || mailbox.isLocked}
                         />
                         <input
                             className="btn-primary"

@@ -294,6 +294,48 @@ module.exports = {
     },
 
     /**
+     * mailboxController.lock()
+     * Manually locks the mailbox. Same access rules as unlock:
+     * the owner, or anyone with a currently valid permission.
+     */
+    lock: function (req, res) {
+        if (!req.session.userId) {
+            return res.status(401).json({ message: 'Not logged in' });
+        }
+
+        MailboxModel.findById(req.params.id)
+            .exec(function (err, mailbox) {
+                if (err) return res.status(500).json({ message: 'Error when getting mailbox', error: err });
+                if (!mailbox) return res.status(404).json({ message: 'Mailbox not found' });
+
+                var userId = req.session.userId.toString();
+                var isOwner = mailbox.owner.toString() === userId;
+
+                function doLock() {
+                    mailbox.isLocked = true;
+                    mailbox.save(function (err) {
+                        if (err) return res.status(500).json({ message: 'Error when locking mailbox', error: err });
+                        return res.json({ message: 'Mailbox locked', isLocked: true });
+                    });
+                }
+
+                if (isOwner) {
+                    return doLock();
+                }
+
+                PermissionModel.find({ mailboxId: mailbox._id, userId: req.session.userId, isActive: true })
+                    .exec(function (err, permissions) {
+                        if (err) return res.status(500).json({ message: 'Error checking permission', error: err });
+                        var hasValid = permissions.some(function (p) { return p.isValid(); });
+                        if (!hasValid) {
+                            return res.status(403).json({ message: 'Access denied: no valid permission' });
+                        }
+                        return doLock();
+                    });
+            });
+    },
+
+    /**
      * mailboxController.getLogs()
      */
     getLogs: function (req, res) {
