@@ -29,6 +29,7 @@ router.post('/', requiresLogin, upload.single('image'), mailboxController.create
 
 // Actions
 router.post('/:id/unlock', mailboxController.unlock);
+router.post('/:id/lock', mailboxController.lock);
 router.get('/:id/logs', mailboxController.getLogs);
 router.get('/:id/weight', mailboxController.getWeight);
 

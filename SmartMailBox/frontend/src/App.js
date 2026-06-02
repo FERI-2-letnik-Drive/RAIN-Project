@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { UserContext } from "./userContext";
 import Login from "./components/Login";
 import Logout from "./components/Logout"
@@ -32,7 +32,10 @@ function App() {
           <Background />
           <Header title="Smart MailBox Application"></Header>
           <Routes>
-            <Route path="/" element={<Home/>}></Route>
+            {/* Start on My Mailboxes if logged in, otherwise on Login */}
+            <Route path="/" element={<Navigate replace to={user ? "/mailbox" : "/login"} />}></Route>
+            {/* Home is kept here for later use */}
+            <Route path="/home" element={<Home/>}></Route>
             <Route path="/register" element={<Register/>}></Route>
             <Route path="/login" element={<Login/>}></Route>
             <Route path="/logout" element={<Logout/>}></Route>
