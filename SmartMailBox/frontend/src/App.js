@@ -5,6 +5,7 @@ import Login from "./components/Login";
 import Logout from "./components/Logout"
 import Register from "./components/Register"
 import Header from "./components/Header"
+import Background from "./components/Background"
 import Home from "./components/Home"
 import CreateMailBox from "./components/CreateMailBox"
 import MailBoxList from "./components/MailBoxList";
@@ -28,6 +29,7 @@ function App() {
         setUserContext: updateUserData
       }}>
         <div className="App">
+          <Background />
           <Header title="Smart MailBox Application"></Header>
           <Routes>
             <Route path="/" element={<Home/>}></Route>

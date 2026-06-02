@@ -29,7 +29,7 @@ body {
     font-family: var(--font-alata);
     background-color: var(--light-mint);
     color: var(--very-dark-green); /* FIXED: Text must be dark to be visible */
-    margin: 0; 
+    margin: 0;
     min-height: 100vh;
     font-size: 18px;
     font-weight: 400;
@@ -37,21 +37,103 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Nav Bar */
+/* Animated WebGL background canvas (sits behind everything) */
+.bg-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    display: block;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Nav Bar - frosted glass over the animated background */
 .nav-bar {
     position: sticky;
     top: 0;
     left: 0;
-    right: 0; 
+    right: 0;
     width: 100%;
-    background-color: var(--forest-green);
-    color: var(--very-dark-green);
-    padding: 0px 24px;
+    background-color: rgba(27, 67, 50, 0.45);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    backdrop-filter: blur(18px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 14px 32px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    box-shadow: 0 4px 20px rgba(8, 28, 21, 0.25);
     z-index: 1000;
+}
+
+/* Brand / logo on the left */
+.brand {
+    font-family: var(--font-alata);
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: var(--light-mint);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.brand:hover {
+    color: #ffffff;
+}
+
+/* Link group on the right */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    font-family: var(--font-alata);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--light-mint);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 999px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-link:hover {
+    background-color: var(--emerald);
+    color: #ffffff;
+}
+
+/* Highlight the page you're on */
+.nav-link.active {
+    background-color: var(--medium-mint);
+    color: var(--very-dark-green);
+}
+
+/* Call-to-action link (Register / Logout) */
+.nav-link-cta {
+    background-color: var(--emerald);
+    color: #ffffff;
+}
+
+.nav-link-cta:hover {
+    background-color: var(--jade);
+    color: var(--very-dark-green);
+}
+
+@media (max-width: 640px) {
+    .nav-bar {
+        flex-direction: column;
+        gap: 12px;
+        padding: 14px 20px;
+    }
+    .nav-links {
+        justify-content: center;
+    }
 }
 
 /*
