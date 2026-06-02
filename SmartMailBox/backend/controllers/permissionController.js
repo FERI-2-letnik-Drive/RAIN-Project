@@ -64,19 +64,28 @@ module.exports = {
                     }
                 }
 
-                var permission = new PermissionModel({
-                    mailboxId: req.params.mailboxId,
-                    userId: req.body.userId,
-                    type: req.body.type,
-                    validFrom: req.body.validFrom || null,
-                    validUntil: req.body.validUntil || null,
-                    isActive: true
-                });
+                // Replace any existing permission for this user on this mailbox,
+                // so re-granting access doesn't leave stale (e.g. expired) duplicates behind.
+                PermissionModel.deleteMany(
+                    { mailboxId: req.params.mailboxId, userId: req.body.userId },
+                    function (err) {
+                        if (err) return res.status(500).json({ message: 'Error when replacing permission', error: err });
 
-                permission.save(function (err, permission) {
-                    if (err) return res.status(500).json({ message: 'Error when creating permission', error: err });
-                    return res.status(201).json(permission);
-                });
+                        var permission = new PermissionModel({
+                            mailboxId: req.params.mailboxId,
+                            userId: req.body.userId,
+                            type: req.body.type,
+                            validFrom: req.body.validFrom || null,
+                            validUntil: req.body.validUntil || null,
+                            isActive: true
+                        });
+
+                        permission.save(function (err, permission) {
+                            if (err) return res.status(500).json({ message: 'Error when creating permission', error: err });
+                            return res.status(201).json(permission);
+                        });
+                    }
+                );
             });
     },
 
