@@ -34,12 +34,12 @@ function MailBoxLogs({ mailboxId, reloadTrigger }) {
 
     return (
         <div style={{ marginTop: "24px", width: "100%" }}>
-            <h3 className="card-title" style={{ fontSize: "28px" }}>Unlock Log</h3>
+            <h3 className="card-title" style={{ fontSize: "28px" }}>Activity Log</h3>
 
             {error && <div className="error-text error-general">{error}</div>}
 
             {logs.length === 0 ? (
-                <p>{loading ? "Loading..." : "No unlocks recorded yet."}</p>
+                <p>{loading ? "Loading..." : "No activity recorded yet."}</p>
             ) : (
                 logs.map((log) => (
                     <div key={log._id} className="profile-row" style={{ flexDirection: "column", alignItems: "stretch", gap: "6px" }}>
@@ -47,10 +47,13 @@ function MailBoxLogs({ mailboxId, reloadTrigger }) {
                             <span className="profile-value">
                                 {log.userId && log.userId.username ? log.userId.username : "Unknown user"}
                             </span>
-                            <span className="profile-value">{log.method}</span>
+                            <span className="profile-value">
+                                {log.action === "lock" ? "🔒 Locked" : "🔓 Unlocked"} ({log.method})
+                            </span>
                         </div>
                         <span className="profile-label" style={{ fontSize: "16px" }}>
                             {new Date(log.openedAt).toLocaleString()} &middot; {log.weightKg} kg
+                            {log.action === "lock" && log.correct === false && " · ⚠️ product not correct"}
                         </span>
                     </div>
                 ))

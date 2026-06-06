@@ -33,6 +33,15 @@ var mailboxSchema = new Schema({
     weightKg: {
         type: Number,
         default: 0
+    },
+    // dovoljeno obmocje teze za zaklepanje (meji nastavi lastnik)
+    minWeightKg: {
+        type: Number,
+        default: null
+    },
+    maxWeightKg: {
+        type: Number,
+        default: null
     }
 }, { timestamps: true });
 

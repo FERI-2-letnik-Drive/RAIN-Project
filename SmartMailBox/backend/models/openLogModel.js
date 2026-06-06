@@ -17,7 +17,18 @@ var openLogSchema = new Schema({
         enum: ['owner', 'permission'],
         required: true
     },
-    // teža ob odprtju (fake podatek)
+    // ali gre za odklep ali zaklep
+    action: {
+        type: String,
+        enum: ['unlock', 'lock'],
+        default: 'unlock'
+    },
+    // ali je bila teza pravilna (relevantno pri zaklepu)
+    correct: {
+        type: Boolean,
+        default: true
+    },
+    // teža ob dogodku (fake podatek)
     weightKg: {
         type: Number,
         required: true
