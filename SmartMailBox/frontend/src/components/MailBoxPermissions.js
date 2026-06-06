@@ -2,14 +2,13 @@ import { useEffect, useState, useCallback } from "react";
 
 const API = "http://localhost:3001";
 
-function MailBoxPermissions({ mailboxId, ownerId }) {
+function MailBoxPermissions({ mailboxId }) {
     const [permissions, setPermissions] = useState([]);
-    const [users, setUsers] = useState([]);
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
 
     // Form state
-    const [userId, setUserId] = useState("");
+    const [email, setEmail] = useState("");
     const [type, setType] = useState("permanent");
     const [validFrom, setValidFrom] = useState("");
     const [validUntil, setValidUntil] = useState("");
@@ -33,17 +32,6 @@ function MailBoxPermissions({ mailboxId, ownerId }) {
 
     useEffect(() => {
         loadPermissions();
-
-        async function loadUsers() {
-            try {
-                const res = await fetch(`${API}/users`, { credentials: "include" });
-                const data = await res.json();
-                if (res.ok) setUsers(data);
-            } catch (err) {
-                console.error(err);
-            }
-        }
-        loadUsers();
     }, [loadPermissions]);
 
     async function handleAdd(e) {
@@ -51,12 +39,12 @@ function MailBoxPermissions({ mailboxId, ownerId }) {
         setError("");
         setMessage("");
 
-        if (!userId) {
-            setError("Please select a user");
+        if (!email.trim()) {
+            setError("Please enter the user's email");
             return;
         }
 
-        const body = { userId, type };
+        const body = { email: email.trim(), type };
         if (type === "temporary") {
             if (!validFrom || !validUntil) {
                 setError("Temporary access needs a start and end date");
@@ -85,7 +73,7 @@ function MailBoxPermissions({ mailboxId, ownerId }) {
                 return;
             }
             setMessage("Access granted");
-            setUserId("");
+            setEmail("");
             setType("permanent");
             setValidFrom("");
             setValidUntil("");
@@ -120,10 +108,6 @@ function MailBoxPermissions({ mailboxId, ownerId }) {
     function formatDate(d) {
         return d ? new Date(d).toLocaleString() : "-";
     }
-
-    const selectableUsers = users.filter(
-        (u) => String(u._id) !== String(ownerId)
-    );
 
     return (
         <div style={{ marginTop: "24px", width: "100%" }}>
@@ -163,15 +147,14 @@ function MailBoxPermissions({ mailboxId, ownerId }) {
 
             <form onSubmit={handleAdd} style={{ marginTop: "16px", width: "100%" }}>
                 <div className="input-group">
-                    <label className="input-label">User</label>
-                    <select className="input-field" value={userId} onChange={(e) => setUserId(e.target.value)}>
-                        <option value="">-- Select user --</option>
-                        {selectableUsers.map((u) => (
-                            <option key={u._id} value={u._id}>
-                                {u.username} ({u.email})
-                            </option>
-                        ))}
-                    </select>
+                    <label className="input-label">User email</label>
+                    <input
+                        className="input-field"
+                        type="email"
+                        placeholder="Enter the user's email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
                 </div>
 
                 <div className="input-group">

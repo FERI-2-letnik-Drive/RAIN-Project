@@ -388,3 +388,25 @@ input:-webkit-autofill::first-line {font-size: 24px} /* Fixing auto-complete siz
     font-weight: 400;
     word-break: break-word;
 }
+
+/* Info grid cells (mailbox details) */
+.info-cell {
+    background-color: #ffffff;
+    border-radius: 5px;
+    padding: 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info-cell-label {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.info-cell-value {
+    font-size: 20px;
+    line-height: 26px;
+}

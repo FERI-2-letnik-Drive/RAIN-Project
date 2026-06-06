@@ -176,51 +176,58 @@ function MailBoxDetail() {
                 !error && <p>Loading...</p>
             ) : (
                 <>
-                    <div className="profile-row">
-                        <span className="profile-label">Label:</span>
-                        <span className="profile-value">{mailbox.label}</span>
-                    </div>
+                    <div style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                        gap: "12px",
+                        width: "100%"
+                    }}>
+                        <div className="info-cell">
+                            <span className="profile-label info-cell-label">Label</span>
+                            <span className="profile-value info-cell-value">{mailbox.label}</span>
+                        </div>
 
-                    <div className="profile-row">
-                        <span className="profile-label">Location:</span>
-                        <span className="profile-value">{mailbox.location || "No location"}</span>
-                    </div>
+                        <div className="info-cell">
+                            <span className="profile-label info-cell-label">Location</span>
+                            <span className="profile-value info-cell-value">{mailbox.location || "No location"}</span>
+                        </div>
 
-                    <div className="profile-row">
-                        <span className="profile-label">Status:</span>
-                        <span className="profile-value">{mailbox.isLocked ? "🔒 Locked" : "🔓 Unlocked"}</span>
-                    </div>
+                        <div className="info-cell">
+                            <span className="profile-label info-cell-label">Status</span>
+                            <span className="profile-value info-cell-value">{mailbox.isLocked ? "🔒 Locked" : "🔓 Unlocked"}</span>
+                        </div>
 
-                    <div className="profile-row">
-                        <span className="profile-label">Weight:</span>
-                        <span className="profile-value">{mailbox.weightKg} kg</span>
-                    </div>
+                        <div className="info-cell">
+                            <span className="profile-label info-cell-label">Weight</span>
+                            <span className="profile-value info-cell-value">{mailbox.weightKg} kg</span>
+                        </div>
 
-                    <div className="profile-row">
-                        <span className="profile-label">Allowed range:</span>
-                        <span className="profile-value">
-                            {(mailbox.minWeightKg === null || mailbox.minWeightKg === undefined) &&
-                             (mailbox.maxWeightKg === null || mailbox.maxWeightKg === undefined)
-                                ? "Not set"
-                                : `${mailbox.minWeightKg ?? "—"} – ${mailbox.maxWeightKg ?? "—"} kg`}
-                        </span>
-                    </div>
-
-                    {weightStatus(mailbox) !== null && (
-                        <div className="profile-row">
-                            <span className="profile-label">Weight check:</span>
-                            <span className="profile-value">
-                                {weightStatus(mailbox) ? "✅ Correct" : "⚠️ Product NOT correct (out of range)"}
+                        <div className="info-cell">
+                            <span className="profile-label info-cell-label">Allowed range</span>
+                            <span className="profile-value info-cell-value">
+                                {(mailbox.minWeightKg === null || mailbox.minWeightKg === undefined) &&
+                                 (mailbox.maxWeightKg === null || mailbox.maxWeightKg === undefined)
+                                    ? "Not set"
+                                    : `${mailbox.minWeightKg ?? "—"} – ${mailbox.maxWeightKg ?? "—"} kg`}
                             </span>
                         </div>
-                    )}
 
-                    {mailbox.createdAt && (
-                        <div className="profile-row">
-                            <span className="profile-label">Created:</span>
-                            <span className="profile-value">{new Date(mailbox.createdAt).toLocaleString()}</span>
-                        </div>
-                    )}
+                        {weightStatus(mailbox) !== null && (
+                            <div className="info-cell">
+                                <span className="profile-label info-cell-label">Weight check</span>
+                                <span className="profile-value info-cell-value">
+                                    {weightStatus(mailbox) ? "✅ Correct" : "⚠️ Product NOT correct (out of range)"}
+                                </span>
+                            </div>
+                        )}
+
+                        {mailbox.createdAt && (
+                            <div className="info-cell">
+                                <span className="profile-label info-cell-label">Created</span>
+                                <span className="profile-value info-cell-value">{new Date(mailbox.createdAt).toLocaleString()}</span>
+                            </div>
+                        )}
+                    </div>
 
                     {mailbox.path && (
                         <img src={mailbox.path} alt={mailbox.label} className="mailbox-image" />

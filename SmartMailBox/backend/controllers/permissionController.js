@@ -1,5 +1,6 @@
 var PermissionModel = require('../models/permissionModel.js');
 var MailboxModel = require('../models/mailboxModel.js');
+var UserModel = require('../models/userModel.js');
 
 module.exports = {
 
@@ -46,8 +47,13 @@ module.exports = {
                     return res.status(403).json({ message: 'Only the owner can add permissions' });
                 }
 
-                if (!req.body.userId || !req.body.type) {
-                    return res.status(400).json({ message: 'userId and type are required' });
+                if (!req.body.type) {
+                    return res.status(400).json({ message: 'type is required' });
+                }
+
+                // user is identified either by email (preferred) or userId
+                if (!req.body.email && !req.body.userId) {
+                    return res.status(400).json({ message: 'email is required' });
                 }
 
                 if (!['permanent', 'temporary'].includes(req.body.type)) {
@@ -64,28 +70,47 @@ module.exports = {
                     }
                 }
 
-                // Replace any existing permission for this user on this mailbox,
-                // so re-granting access doesn't leave stale (e.g. expired) duplicates behind.
-                PermissionModel.deleteMany(
-                    { mailboxId: req.params.mailboxId, userId: req.body.userId },
-                    function (err) {
-                        if (err) return res.status(500).json({ message: 'Error when replacing permission', error: err });
-
-                        var permission = new PermissionModel({
-                            mailboxId: req.params.mailboxId,
-                            userId: req.body.userId,
-                            type: req.body.type,
-                            validFrom: req.body.validFrom || null,
-                            validUntil: req.body.validUntil || null,
-                            isActive: true
-                        });
-
-                        permission.save(function (err, permission) {
-                            if (err) return res.status(500).json({ message: 'Error when creating permission', error: err });
-                            return res.status(201).json(permission);
-                        });
+                function grantTo(targetUserId) {
+                    // a user cannot grant access to themselves (they are already the owner)
+                    if (targetUserId.toString() === req.session.userId.toString()) {
+                        return res.status(400).json({ message: 'You already own this mailbox' });
                     }
-                );
+
+                    // Replace any existing permission for this user on this mailbox,
+                    // so re-granting access doesn't leave stale (e.g. expired) duplicates behind.
+                    PermissionModel.deleteMany(
+                        { mailboxId: req.params.mailboxId, userId: targetUserId },
+                        function (err) {
+                            if (err) return res.status(500).json({ message: 'Error when replacing permission', error: err });
+
+                            var permission = new PermissionModel({
+                                mailboxId: req.params.mailboxId,
+                                userId: targetUserId,
+                                type: req.body.type,
+                                validFrom: req.body.validFrom || null,
+                                validUntil: req.body.validUntil || null,
+                                isActive: true
+                            });
+
+                            permission.save(function (err, permission) {
+                                if (err) return res.status(500).json({ message: 'Error when creating permission', error: err });
+                                return res.status(201).json(permission);
+                            });
+                        }
+                    );
+                }
+
+                // resolve the target user by email
+                if (req.body.email) {
+                    UserModel.findOne({ email: req.body.email.trim() })
+                        .exec(function (err, user) {
+                            if (err) return res.status(500).json({ message: 'Error when looking up user', error: err });
+                            if (!user) return res.status(404).json({ message: 'No user found with that email' });
+                            return grantTo(user._id);
+                        });
+                } else {
+                    return grantTo(req.body.userId);
+                }
             });
     },
 
