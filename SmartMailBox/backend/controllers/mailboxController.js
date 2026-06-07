@@ -191,6 +191,23 @@ module.exports = {
                 mailbox.label = req.body.label || mailbox.label;
                 mailbox.location = req.body.location !== undefined ? req.body.location : mailbox.location;
 
+                // owner can set the allowed weight range for locking
+                if (req.body.minWeightKg !== undefined) {
+                    mailbox.minWeightKg = req.body.minWeightKg === null || req.body.minWeightKg === ''
+                        ? null
+                        : Number(req.body.minWeightKg);
+                }
+                if (req.body.maxWeightKg !== undefined) {
+                    mailbox.maxWeightKg = req.body.maxWeightKg === null || req.body.maxWeightKg === ''
+                        ? null
+                        : Number(req.body.maxWeightKg);
+                }
+
+                if (mailbox.minWeightKg !== null && mailbox.maxWeightKg !== null &&
+                    mailbox.minWeightKg > mailbox.maxWeightKg) {
+                    return res.status(400).json({ message: 'minWeightKg must be less than or equal to maxWeightKg' });
+                }
+
                 mailbox.save(function (err, mailbox) {
                     if (err) return res.status(500).json({ message: 'Error when updating mailbox', error: err });
                     return res.json(mailbox);
@@ -261,6 +278,8 @@ module.exports = {
                             mailboxId: mailbox._id,
                             userId: req.session.userId,
                             method: method,
+                            action: 'unlock',
+                            correct: true,
                             weightKg: fakeWeight
                         });
 
@@ -311,16 +330,69 @@ module.exports = {
                 var userId = req.session.userId.toString();
                 var isOwner = mailbox.owner.toString() === userId;
 
-                function doLock() {
+                function weightWithinBounds() {
+                    var w = mailbox.weightKg;
+                    var okMin = (mailbox.minWeightKg === null || mailbox.minWeightKg === undefined) || w >= mailbox.minWeightKg;
+                    var okMax = (mailbox.maxWeightKg === null || mailbox.maxWeightKg === undefined) || w <= mailbox.maxWeightKg;
+                    return okMin && okMax;
+                }
+
+                function doLock(method) {
+                    var within = weightWithinBounds();
+
+                    // weight incorrect -> only the owner can lock
+                    if (!within && !isOwner) {
+                        return res.status(403).json({
+                            message: 'Product is not correct: weight is out of the allowed range. Only the owner can lock this mailbox.',
+                            correct: false,
+                            weightKg: mailbox.weightKg,
+                            minWeightKg: mailbox.minWeightKg,
+                            maxWeightKg: mailbox.maxWeightKg
+                        });
+                    }
+
                     mailbox.isLocked = true;
+
                     mailbox.save(function (err) {
                         if (err) return res.status(500).json({ message: 'Error when locking mailbox', error: err });
-                        return res.json({ message: 'Mailbox locked', isLocked: true });
+
+                        var log = new OpenLogModel({
+                            mailboxId: mailbox._id,
+                            userId: req.session.userId,
+                            method: method,
+                            action: 'lock',
+                            correct: within,
+                            weightKg: mailbox.weightKg
+                        });
+
+                        log.save(function (err) {
+                            if (err) return res.status(500).json({ message: 'Error when saving log', error: err });
+
+                            if (!within) {
+                                return res.json({
+                                    message: 'Mailbox locked, but the product is NOT correct (weight out of range).',
+                                    correct: false,
+                                    isLocked: true,
+                                    weightKg: mailbox.weightKg,
+                                    minWeightKg: mailbox.minWeightKg,
+                                    maxWeightKg: mailbox.maxWeightKg,
+                                    method: method
+                                });
+                            }
+
+                            return res.json({
+                                message: 'Mailbox locked',
+                                correct: true,
+                                isLocked: true,
+                                weightKg: mailbox.weightKg,
+                                method: method
+                            });
+                        });
                     });
                 }
 
                 if (isOwner) {
-                    return doLock();
+                    return doLock('owner');
                 }
 
                 PermissionModel.find({ mailboxId: mailbox._id, userId: req.session.userId, isActive: true })
@@ -330,7 +402,7 @@ module.exports = {
                         if (!hasValid) {
                             return res.status(403).json({ message: 'Access denied: no valid permission' });
                         }
-                        return doLock();
+                        return doLock('permission');
                     });
             });
     },

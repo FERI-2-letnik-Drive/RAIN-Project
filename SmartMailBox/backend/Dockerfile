@@ -3,7 +3,7 @@ FROM node:24.16.0-alpine
 WORKDIR /backend
 
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 COPY . .
 
