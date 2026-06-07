@@ -57,64 +57,76 @@ function MailboxList() {
 
     return (
         <div className="surface-card mailbox-list-card">
-            <h2 className="card-title">My Mailboxes</h2>
-
             {error && <div className="error-text error-general">{error}</div>}
 
-            {mailboxes.length === 0 ? (
-                <p>No mailboxes yet.</p>
-            ) : (
-                mailboxes.map((mailbox) => (
-                    <Link
-                        key={mailbox._id}
-                        to={`/mailbox/${mailbox._id}`}
-                        className="mailbox-item"
-                        style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                        <h3 className="mailbox-title">{mailbox.label}</h3>
-                        <p>{mailbox.location ? mailbox.location : "No location"}</p>
+            <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+                gap: "24px",
+                width: "100%",
+                alignItems: "start"
+            }}>
+                <div className="detail-panel">
+                    <h2 className="card-title" style={{ margin: "0 0 8px 0" }}>My Mailboxes</h2>
 
-                        {mailbox.path && (
-                            <img
-                                src={mailbox.path}
-                                alt={mailbox.label}
-                                className="mailbox-image"
-                            />
-                        )}
-                    </Link>
-                ))
-            )}
+                    {mailboxes.length === 0 ? (
+                        <p>No mailboxes yet.</p>
+                    ) : (
+                        mailboxes.map((mailbox) => (
+                            <Link
+                                key={mailbox._id}
+                                to={`/mailbox/${mailbox._id}`}
+                                className="mailbox-item"
+                                style={{ textDecoration: "none", color: "inherit" }}
+                            >
+                                <h3 className="mailbox-title">{mailbox.label}</h3>
+                                <p>{mailbox.location ? mailbox.location : "No location"}</p>
 
-            <h2 className="card-title" style={{ marginTop: "32px" }}>Shared with me</h2>
+                                {mailbox.path && (
+                                    <img
+                                        src={mailbox.path}
+                                        alt={mailbox.label}
+                                        className="mailbox-image"
+                                    />
+                                )}
+                            </Link>
+                        ))
+                    )}
+                </div>
 
-            {shared.length === 0 ? (
-                <p>No mailboxes shared with you.</p>
-            ) : (
-                shared.map((mailbox) => (
-                    <Link
-                        key={mailbox._id}
-                        to={`/mailbox/${mailbox._id}`}
-                        className="mailbox-item"
-                        style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                        <h3 className="mailbox-title">{mailbox.label}</h3>
-                        <p>{mailbox.location ? mailbox.location : "No location"}</p>
-                        {mailbox.accessType && (
-                            <p className="profile-label" style={{ fontSize: "16px" }}>
-                                Access: {mailbox.accessType}
-                            </p>
-                        )}
+                <div className="detail-panel">
+                    <h2 className="card-title" style={{ margin: "0 0 8px 0" }}>Shared with me</h2>
 
-                        {mailbox.path && (
-                            <img
-                                src={mailbox.path}
-                                alt={mailbox.label}
-                                className="mailbox-image"
-                            />
-                        )}
-                    </Link>
-                ))
-            )}
+                    {shared.length === 0 ? (
+                        <p>No mailboxes shared with you.</p>
+                    ) : (
+                        shared.map((mailbox) => (
+                            <Link
+                                key={mailbox._id}
+                                to={`/mailbox/${mailbox._id}`}
+                                className="mailbox-item"
+                                style={{ textDecoration: "none", color: "inherit" }}
+                            >
+                                <h3 className="mailbox-title">{mailbox.label}</h3>
+                                <p>{mailbox.location ? mailbox.location : "No location"}</p>
+                                {mailbox.accessType && (
+                                    <p className="profile-label" style={{ fontSize: "16px" }}>
+                                        Access: {mailbox.accessType}
+                                    </p>
+                                )}
+
+                                {mailbox.path && (
+                                    <img
+                                        src={mailbox.path}
+                                        alt={mailbox.label}
+                                        className="mailbox-image"
+                                    />
+                                )}
+                            </Link>
+                        ))
+                    )}
+                </div>
+            </div>
         </div>
     );
 }

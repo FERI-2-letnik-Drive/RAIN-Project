@@ -167,7 +167,7 @@ function MailBoxDetail() {
     }
 
     return (
-        <div className="surface-card profile-card">
+        <div className="surface-card profile-card mailbox-detail-card">
             <h2 className="card-title">Mailbox Details</h2>
 
             {error && <div className="error-text error-general">{error}</div>}
@@ -177,8 +177,9 @@ function MailBoxDetail() {
             ) : (
                 <>
                     <div style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "center",
                         gap: "12px",
                         width: "100%"
                     }}>
@@ -230,7 +231,12 @@ function MailBoxDetail() {
                     </div>
 
                     {mailbox.path && (
-                        <img src={mailbox.path} alt={mailbox.label} className="mailbox-image" />
+                        <img
+                            src={mailbox.path}
+                            alt={mailbox.label}
+                            className="mailbox-image"
+                            style={{ maxHeight: "200px", width: "auto", alignSelf: "center" }}
+                        />
                     )}
 
                     {unlockMessage && <div className="profile-row"><span className="profile-value">{unlockMessage}</span></div>}
@@ -240,13 +246,14 @@ function MailBoxDetail() {
                             : <div className="error-text error-general">{lockMessage}</div>
                     )}
 
-                    <div className="input-group">
+                    <div className="input-group" style={{ flexDirection: "row", flexWrap: "wrap", gap: "12px" }}>
                         <input
                             className="btn-primary"
                             type="button"
                             value={unlocking ? "Unlocking..." : "Unlock Mailbox"}
                             onClick={handleUnlock}
                             disabled={unlocking || locking || !mailbox.isLocked}
+                            style={{ flex: "1 1 140px", marginTop: 0 }}
                         />
                         <input
                             className="btn-primary"
@@ -254,19 +261,27 @@ function MailBoxDetail() {
                             value={locking ? "Locking..." : "Lock Mailbox"}
                             onClick={handleLock}
                             disabled={unlocking || locking || mailbox.isLocked}
+                            style={{ flex: "1 1 140px", marginTop: 0 }}
                         />
                         <input
                             className="btn-primary"
                             type="button"
                             value="Back to Mailboxes"
                             onClick={() => navigate("/mailbox")}
+                            style={{ flex: "1 1 140px", marginTop: 0 }}
                         />
                     </div>
 
                     {userContext.user && String(mailbox.owner) === String(userContext.user._id) && (
-                        <>
-                            <div style={{ marginTop: "24px", width: "100%" }}>
-                                <h3 className="card-title" style={{ fontSize: "28px" }}>Weight Range for Locking</h3>
+                        <div style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                            gap: "16px",
+                            width: "100%",
+                            alignItems: "start"
+                        }}>
+                            <div className="detail-panel">
+                                <h3 className="card-title" style={{ fontSize: "28px", margin: "0 0 8px 0" }}>Weight Range for Locking</h3>
                                 {boundsMessage && <div className="profile-row"><span className="profile-value">{boundsMessage}</span></div>}
                                 <form onSubmit={handleSaveBounds} style={{ width: "100%" }}>
                                     <div className="input-group">
@@ -306,7 +321,7 @@ function MailBoxDetail() {
 
                             <MailBoxPermissions mailboxId={mailbox._id} ownerId={mailbox.owner} />
                             <MailBoxLogs mailboxId={mailbox._id} reloadTrigger={logsReload} />
-                        </>
+                        </div>
                     )}
                 </>
             )}

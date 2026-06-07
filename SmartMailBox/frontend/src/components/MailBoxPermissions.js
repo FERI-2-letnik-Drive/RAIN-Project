@@ -110,8 +110,8 @@ function MailBoxPermissions({ mailboxId }) {
     }
 
     return (
-        <div style={{ marginTop: "24px", width: "100%" }}>
-            <h3 className="card-title" style={{ fontSize: "28px" }}>Manage Access</h3>
+        <div className="detail-panel">
+            <h3 className="card-title" style={{ fontSize: "28px", margin: "0 0 8px 0" }}>Manage Access</h3>
 
             {error && <div className="error-text error-general">{error}</div>}
             {message && <div className="profile-row"><span className="profile-value">{message}</span></div>}

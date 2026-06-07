@@ -38,8 +38,8 @@ function MailBoxLogs({ mailboxId, reloadTrigger }) {
     const shownLogs = logs.slice(0, visibleCount);
 
     return (
-        <div style={{ marginTop: "24px", width: "100%" }}>
-            <h3 className="card-title" style={{ fontSize: "28px" }}>Activity Log</h3>
+        <div className="detail-panel">
+            <h3 className="card-title" style={{ fontSize: "28px", margin: "0 0 8px 0" }}>Activity Log</h3>
 
             {error && <div className="error-text error-general">{error}</div>}
 

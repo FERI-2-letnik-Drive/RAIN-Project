@@ -389,6 +389,12 @@ input:-webkit-autofill::first-line {font-size: 24px} /* Fixing auto-complete siz
     word-break: break-word;
 }
 
+/* Wider card for the mailbox details so info can span multiple columns */
+.mailbox-detail-card {
+    width: min(95vw, 1000px);
+    max-width: 1000px;
+}
+
 /* Info grid cells (mailbox details) */
 .info-cell {
     background-color: #ffffff;
@@ -398,6 +404,20 @@ input:-webkit-autofill::first-line {font-size: 24px} /* Fixing auto-complete siz
     display: flex;
     flex-direction: column;
     gap: 6px;
+    /* fixed-ish width so wrapped rows stay centered and uniform */
+    flex: 0 1 200px;
+}
+
+/* Unified panel styling for Access / Range / Activity sections */
+.detail-panel {
+    background-color: var(--jade);
+    border-radius: 5px;
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .info-cell-label {
