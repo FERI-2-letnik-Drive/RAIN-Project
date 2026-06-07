@@ -26,9 +26,23 @@ services:
       # Override the .env value so the dockerized stack uses the local Mongo container
       # (self-contained system). Remove this line to use the Atlas URI from .env instead.
       - MONGODB_URI=mongodb://mongo:27017/rain-project
+      # Reach the ORV face-verification service over the compose network.
+      - ORV_API_URL=http://orv:3002/api/v1/face-verifications
     depends_on:
       mongo:
         condition: service_healthy
+      orv:
+        condition: service_started
+    restart: unless-stopped
+
+  orv:
+    build:
+      # ORV face-recognition project lives in a separate folder on disk.
+      context: ../../../../Documents/FERI/ORV/Paketnik/ORV-Project
+      dockerfile: Dockerfile
+    container_name: smartmailbox_orv_container
+    ports:
+      - "3002:3002"
     restart: unless-stopped
 
   frontend:

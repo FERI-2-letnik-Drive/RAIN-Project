@@ -24,6 +24,7 @@ router.post('/register', userController.create);
 router.post('/login', userController.login);
 router.post('/mobile-login', userController.mobileLogin);
 router.post('/mobile-login/face-verify', upload.single('current_image'), userController.mobileFaceVerifyLogin);
+router.post('/2fa/enable', upload.single('image'), userController.enableTwoFactor);
 
 /*
  * PUT

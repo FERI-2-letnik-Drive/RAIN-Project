@@ -1,5 +1,22 @@
 var UserModel = require('../models/userModel.js');
 var bcrypt = require('bcrypt');
+const cloudinary = require("../utils/cloudinary");
+const streamifier = require("streamifier");
+
+// Uploads a file buffer to Cloudinary and resolves with the upload result.
+function uploadToCloudinary(fileBuffer) {
+    return new Promise(function (resolve, reject) {
+        var uploadStream = cloudinary.uploader.upload_stream(
+            { folder: "smartmailbox" },
+            function (error, result) {
+                if (error) return reject(error);
+                resolve(result);
+            }
+        );
+
+        streamifier.createReadStream(fileBuffer).pipe(uploadStream);
+    });
+}
 
 /**
  * userController.js
@@ -7,6 +24,40 @@ var bcrypt = require('bcrypt');
  * @description :: Server-side logic for managing users.
  */
 module.exports = {
+
+    /**
+     * userController.enableTwoFactor()
+     * Saves the uploaded face image as the user's reference image and turns on 2FA.
+     */
+    enableTwoFactor: async function (req, res) {
+        if (!req.session || !req.session.userId) {
+            return res.status(401).json({ message: "You must be logged in" });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({ message: "Face image is required" });
+        }
+
+        try {
+            var uploadResult = await uploadToCloudinary(req.file.buffer);
+
+            var user = await UserModel.findById(req.session.userId);
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            user.referenceFaceImageUrl = uploadResult.secure_url;
+            user.twoFactorEnabled = true;
+            await user.save();
+
+            return res.status(200).json({ twoFactorEnabled: true });
+        } catch (err) {
+            return res.status(500).json({
+                message: "Error enabling two-factor authentication",
+                error: err.message
+            });
+        }
+    },
 
     /**
      * userController.list()
