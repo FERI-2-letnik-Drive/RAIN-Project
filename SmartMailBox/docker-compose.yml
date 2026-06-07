@@ -1,4 +1,18 @@
 services:
+  mongo:
+    image: mongo:7
+    container_name: smartmailbox_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   backend:
     build:
       context: ./backend
@@ -8,6 +22,13 @@ services:
       - "3001:3001"
     env_file:
       - ./backend/.env
+    environment:
+      # Override the .env value so the dockerized stack uses the local Mongo container
+      # (self-contained system). Remove this line to use the Atlas URI from .env instead.
+      - MONGODB_URI=mongodb://mongo:27017/rain-project
+    depends_on:
+      mongo:
+        condition: service_healthy
     restart: unless-stopped
 
   frontend:
@@ -21,5 +42,5 @@ services:
       - backend
     restart: unless-stopped
 
-  # database:
-  #   - tega verjetno neboma mela, ker ze runa na serverju (MongoDB Atlas).
+volumes:
+  mongo_data:
