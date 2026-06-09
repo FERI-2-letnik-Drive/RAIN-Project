@@ -1,0 +1,62 @@
+# Prenosljiv (production) compose za CELOTEN sistem Pametni paketnik.
+#
+# Za razliko od razvojnega SmartMailBox/docker-compose.yml ta NE gradi slik
+# iz lokalnih poti, ampak jih POTEGNE z Docker Huba (objavijo jih GitHub
+# Actions workflowi). Zato deluje na poljubnem racunalniku z eno samo skripto,
+# brez izvorne kode posameznih repozitorijev.
+#
+# Pred zagonom: nastavi DOCKERHUB_USERNAME (glej .env.example) in
+# skopiraj backend.env.example -> backend.env ter vpisi skrivnosti.
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: paketnik_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  orv:
+    image: ${DOCKERHUB_USERNAME}/orv-api:latest
+    container_name: paketnik_orv
+    ports:
+      - "3002:3002"
+    restart: unless-stopped
+
+  backend:
+    image: ${DOCKERHUB_USERNAME}/smartmailbox-backend:latest
+    container_name: paketnik_backend
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./backend.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - MONGODB_URI=mongodb://mongo:27017/rain-project
+      - ORV_API_URL=http://orv:3002/api/v1/face-verifications
+    depends_on:
+      mongo:
+        condition: service_healthy
+      orv:
+        condition: service_started
+    restart: unless-stopped
+
+  frontend:
+    image: ${DOCKERHUB_USERNAME}/smartmailbox-frontend:latest
+    container_name: paketnik_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  mongo_data:

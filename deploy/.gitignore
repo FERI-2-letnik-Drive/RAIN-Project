@@ -1,0 +1,3 @@
+# dejanske skrivnosti se ne verzionirajo (le *.example)
+.env
+backend.env
